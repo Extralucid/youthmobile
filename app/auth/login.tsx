@@ -4,6 +4,7 @@ import { Button, Snackbar, TextInput } from 'react-native-paper';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 // import * as SplashScreen from 'expo-splash-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useRouter } from 'expo-router';
 
@@ -33,19 +34,17 @@ const router = useRouter();
     }
   }
 
-  const setObjectValue = async (value: any) => {
-    // try {
-    //   const jsonValue = JSON.stringify(value);
-    //   await AsyncStorage.setItem('jsonAdherent', jsonValue);
-    //   console.log('Done.');
-    // } catch (e) {
-    //   console.log("Erreur pendant l'enregistrement du JSON");
-    // }
+  const goToRegister = async () => {
+    router.replace('/auth/signup');
+  };
+
+    const goToForgot = async () => {
+    router.replace('/auth/forgetPassword');
   };
 
   const scanFingerprint = async () => {
-    // const email = await AsyncStorage.getItem('email');
-    // const pwd = await AsyncStorage.getItem('pwd');
+     const email = await AsyncStorage.getItem('email');
+     const pwd = await AsyncStorage.getItem('pwd');
 
     // if (!email || !pwd) return;
 
@@ -58,7 +57,7 @@ const router = useRouter();
   };
 
   async function login() {
-    router.replace('/');
+    router.replace('/onboarding/categories');
     // setLoading(true);
     // const url = 'https://gesmuttest.menet.ci:5482/api/v1/signin';
     // return fetch(url, {
@@ -193,8 +192,8 @@ const router = useRouter();
             onChangeText={(text) => setPassword(text)}
             right={<TextInput.Icon icon="eye" onPress={() => AffichePassword()} />}
           />
-          {/*<Text style={styles.forgetPasswordText} onPress={() => navigation.navigate('ForgetPassword')}>Mot
-                        de passe oublié ?</Text>*/}
+          <Text style={styles.forgetPasswordText} onPress={() => {goToForgot();}}>Mot
+                        de passe oublié ?</Text>
           <Button mode="contained" style={styles.buttonLogin} onPress={() => redirect()}>
             Se connecter
           </Button>
@@ -214,7 +213,7 @@ const router = useRouter();
             <Text style={{ flex: 1, fontSize: 17, textAlign: 'center' }}>Ou</Text>
             <View style={styles.rightLine}></View>
           </View>
-          <Text style={styles.SignInTitle} onPress={() => {}}>
+          <Text style={styles.SignInTitle} onPress={() => {goToRegister();}}>
             Inscrivez-vous
           </Text>
         </View>
