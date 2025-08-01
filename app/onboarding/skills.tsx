@@ -86,7 +86,6 @@ const SkillsScreen = () => {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Sélectionnez vos compétences</Text>
-        <Text style={styles.subtitle}>Choisissez les compétences que vous maîtrisez</Text>
 
         {/* Search Input */}
         <TextInput
@@ -97,7 +96,7 @@ const SkillsScreen = () => {
           placeholderTextColor="#999"
         />
 
-        <Text style={[styles.subtitle, { marginTop: 30 }]}>Select your skills</Text>
+        <Text style={[styles.subtitle, { marginTop: 30 }]}>Selectionnez vos competences</Text>
 
         <View style={styles.tagsContainer}>
           {filteredSkills.map((skill) => (
@@ -125,7 +124,7 @@ const SkillsScreen = () => {
 
         {totalSelections > 0 && totalSelections < MIN_SELECTIONS && (
           <Text style={styles.minSelectionText}>
-            Select at least {MIN_SELECTIONS} items to continue
+            Selectionnez au moins {MIN_SELECTIONS} competences pour continuer
           </Text>
         )}
       </ScrollView>
@@ -134,14 +133,14 @@ const SkillsScreen = () => {
           style={[styles.button, styles.skipButton]}
           onPress={() => router.replace('/')}
         >
-          <Text style={styles.skipButtonText}>Skip</Text>
+          <Text style={styles.skipButtonText}>Sauter</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, styles.submitButton]}
           onPress={handleSubmit}
         >
-          <Text style={styles.submitButtonText}>Complete Onboarding</Text>
+          <Text style={styles.submitButtonText}>Completer ses preferences</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
   },
   tag: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderRadius: 20,
     backgroundColor: '#f0f0f0',
     marginRight: 10,

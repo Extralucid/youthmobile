@@ -172,7 +172,7 @@ const router = useRouter();
         <Text style={styles.fieldsetTitle}>Youth Connect BF</Text>
         <View style={styles.formGroup}>
           <TextInput
-            label="Adresse mail"
+            label="Email ou Téléphone"
             placeholder="Entrez votre adresse mail"
             value={identifiant}
             style={styles.textInput}

@@ -165,7 +165,7 @@ const CategoriesScreen = () => {
           style={[styles.button, styles.skipButton]}
           onPress={handleSkip}
         >
-          <Text style={styles.skipButtonText}>Skip</Text>
+          <Text style={styles.skipButtonText}>Sauter</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -178,7 +178,7 @@ const CategoriesScreen = () => {
           disabled={isSubmitDisabled}
         >
           <Text style={styles.submitButtonText}>
-            {isSubmitDisabled ? `Select ${MIN_SELECTIONS - totalSelections} more` : 'Continue'}
+            {isSubmitDisabled ? `Selectionnez ${MIN_SELECTIONS - totalSelections} Plus` : 'Continuer'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   tag: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderRadius: 20,
     backgroundColor: '#f0f0f0',
     marginRight: 10,
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   button: {
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 25,
     borderRadius: 25,
     alignItems: 'center',

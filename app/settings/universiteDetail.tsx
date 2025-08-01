@@ -5,10 +5,10 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 
 const UniversiteDetailScreen = () => {
   const items = [
-    { name: 'Lather moto jacket', price: '$8,564.00', quantity: 'X1', vat: 'including VAT 10%' },
-    { name: 'Lorem ipsum', price: '$358.00', quantity: 'X1', vat: 'including VAT 10%' },
-    { name: 'Enim ad minim veniam', price: '$1,355.00', quantity: 'X1', vat: 'including VAT 10%' },
-    { name: 'Dolor in reprehenderit', price: '$2,333.12', quantity: 'X1', vat: 'including VAT 10%' },
+    { name: 'Systeme d\'information et reseaux', price: 'xof450 000', quantity: 'an 1', vat: 'Première année' },
+    { name: 'Genie Industrielle', price: 'xof450 000', quantity: 'an 1', vat: 'Première année' },
+    { name: 'Controle Audit', price: 'xof450 000', quantity: 'an 1', vat: 'Première année' },
+    { name: 'Finances Comptabilite', price: 'xof450 000', quantity: 'an 1', vat: 'Première année' },
   ];
 
   const subtotal = items.reduce((sum, item) => sum + parseFloat(item.price.replace('$', '').replace(',', '')), 0);
@@ -30,27 +30,27 @@ const UniversiteDetailScreen = () => {
       <ScrollView style={styles.container}>
         {/* Company Card */}
         <View style={styles.card}>
-          <Text style={styles.companyName}>Philipo Plein</Text>
+          <Text style={styles.companyName}>ESTA</Text>
           
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Amount</Text>
-            <Text style={styles.detailValue}>$1,245.17</Text>
+            <Text style={styles.detailLabel}>Ville</Text>
+            <Text style={styles.detailValue}>Ouaga</Text>
           </View>
           
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>March 13, 2018</Text>
+            <Text style={styles.detailLabel}>Rejoint le</Text>
+            <Text style={styles.detailValue}>Mars 13, 2018</Text>
           </View>
           
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Status</Text>
-            <Text style={[styles.detailValue, styles.statusNotReceived]}>Not received</Text>
+            <Text style={[styles.detailValue, styles.statusNotReceived]}>En Attente</Text>
           </View>
         </View>
 
         {/* Items List */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Items</Text>
+          <Text style={styles.sectionTitle}>Nos filières</Text>
           {items.map((item, index) => (
             <View key={index} style={styles.itemContainer}>
               <Text style={styles.itemName}>{item.name}</Text>
@@ -62,8 +62,8 @@ const UniversiteDetailScreen = () => {
 
         {/* Subtotal */}
         <View style={styles.subtotalContainer}>
-          <Text style={styles.subtotalLabel}>Subtotal</Text>
-          <Text style={styles.subtotalValue}>{formattedSubtotal}</Text>
+          <Text style={styles.subtotalLabel}>Diplomes reconnus par le CAMES</Text>
+          <Text style={styles.subtotalValue}>Oui</Text>
         </View>
       </ScrollView>
 

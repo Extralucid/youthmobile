@@ -1,14 +1,15 @@
 // MyChecksScreen.tsx
 import React, { useMemo, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
+  FlatList,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 type Check = {
@@ -17,41 +18,41 @@ type Check = {
   logo?: number;              // local asset
   amount: string;
   date: string;
-  status: 'Not received';
+  status: 'En attente';
 };
 
 const ALL_DATA: Check[] = [
   {
     id: '1',
-    brand: 'Hermes',
+    brand: 'SANCFIS',
     logo: require('../../assets/images/hermes-logo.png'),
-    amount: '$1,500.67',
+    amount: 'xof1,500.67',
     date: '12/12/2020',
-    status: 'Not received',
+    status: 'En attente',
   },
   {
     id: '2',
-    brand: 'Philipp Plein',
+    brand: 'Orange',
     logo: require('../../assets/images/hermes-logo.png'),
-    amount: '$1,245.17',
+    amount: 'xof1,245.17',
     date: '22/10/2025',
-    status: 'Not received',
+    status: 'En attente',
   },
   {
     id: '3',
-    brand: "L'Ocitane",
+    brand: "ATOS",
     logo: require('../../assets/images/hermes-logo.png'),
-    amount: '$545.28',
+    amount: 'xof545.28',
     date: '12/10/2009',
-    status: 'Not received',
+    status: 'En attente',
   },
   {
     id: '4',
     brand: 'Kenzo',
     logo: require('../../assets/images/hermes-logo.png'),
-    amount: '$375.37',
+    amount: 'xof375.37',
     date: '12/11/2021',
-    status: 'Not received',
+    status: 'En attente',
   },
 ];
 
@@ -59,19 +60,19 @@ const ALL_DATA: Check[] = [
 
 
 
-const FILTER_OPTIONS = ['All', 'Not received', 'Received'];
+const FILTER_OPTIONS = ['Tous', 'En attente', 'Valide'];
 
 export default function EntreprisesScreen() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [activeChip, setActiveChip] = useState('All');
+  const [activeChip, setActiveChip] = useState('Tous');
 
   /* ---------- Filtering & Search ---------- */
   const filteredData = useMemo(() => {
     let data = ALL_DATA;
 
     // 1. Chip filter
-    if (activeChip !== 'All') {
+    if (activeChip !== 'Tous') {
       data = data.filter((c) => c.status === activeChip);
     }
 
@@ -86,7 +87,7 @@ export default function EntreprisesScreen() {
 
   /* ---------- Render ---------- */
   const renderItem = ({ item }: { item: Check }) => (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.brandRow}>
           <Image source={item.logo} style={styles.logo} />
@@ -99,19 +100,19 @@ export default function EntreprisesScreen() {
 
       <View style={styles.labelsRow}>
         <View style={styles.labelGroup}>
-          <Text style={styles.label}>Amount</Text>
+          <Text style={styles.label}>Souscription</Text>
           <Text style={styles.value}>{item.amount}</Text>
         </View>
         <View style={styles.labelGroup}>
-          <Text style={styles.label}>Date</Text>
+          <Text style={styles.label}>Rejoint le</Text>
           <Text style={styles.value}>{item.date}</Text>
         </View>
         <View style={styles.labelGroup}>
-          <Text style={styles.label}>Status</Text>
+          <Text style={styles.label}>Statut</Text>
           <Text style={[styles.value, styles.status]}>{item.status}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderChip = (label: string) => (
@@ -138,7 +139,7 @@ export default function EntreprisesScreen() {
     <View style={styles.container}>
       {/* ---------- Header ---------- */}
       <View style={styles.header}>
-        <Text style={styles.title}>My Checks</Text>
+        <Text style={styles.title}>Les entreprises</Text>
         <View style={styles.headerButtons}>
           <Pressable onPress={() => setShowSearch(!showSearch)}>
             <Text style={styles.icon}>🔍</Text>
@@ -154,7 +155,7 @@ export default function EntreprisesScreen() {
         <View style={styles.searchWrapper}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search by brand..."
+            placeholder="chercher par activites..."
             value={searchText}
             onChangeText={setSearchText}
             autoFocus

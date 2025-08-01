@@ -87,13 +87,16 @@ const ServicesScreen = () => {
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
         >
+            <View style={styles.slider}>
+                {/* <ImageSlider /> */}
+            </View>
             <Text style={styles.header}>Nos Services</Text>
 
             <View style={styles.grid}>
                 {services.map((service, index) => (
                     <TouchableOpacity
                         key={index}
-                        onPress={()=>{router.navigate(service.href)}}
+                        onPress={() => { router.navigate(service.href) }}
                         style={{
                             height: 102, width: CARD_WIDTH
                         }}>
@@ -136,14 +139,21 @@ const ServicesScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
+        flex: 1,
+        top: 0,
         padding: CARD_GAP,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f8f9fa',
         paddingBottom: 20,
-        marginTop: 40,
         marginLeft: 10,
+    },
+    slider: {
+        top: 0,
+        paddingLeft: 25,
+        paddingRight: 25,
+        marginTop: '5%',
+        height: '20%',
     },
     header: {
         fontSize: 22,
@@ -168,7 +178,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4.65,
         elevation: 4,
     },
-   
+
 });
 
 export default ServicesScreen;

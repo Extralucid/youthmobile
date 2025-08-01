@@ -35,6 +35,12 @@ export default function SignupScreen() {
 
   const goToLogin = async () => {
     router.replace('/auth/login');
+     router.replace('/onboarding/categories');
+  };
+
+
+    const goToHome = async () => {
+     router.replace('/onboarding/categories');
   };
 
 
@@ -97,7 +103,7 @@ export default function SignupScreen() {
           />
           {/*<Text style={styles.forgetPasswordText} onPress={() => navigation.navigate('ForgetPassword')}>Mot
                         de passe oublié ?</Text>*/}
-          <Button mode="contained" style={styles.buttonLogin} onPress={() => redirect()}>
+          <Button mode="contained" style={styles.buttonLogin} onPress={() => goToHome()}>
             S'inscrire
           </Button>
           

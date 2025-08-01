@@ -1,55 +1,56 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const UniversiteScreen = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeFilter, setActiveFilter] = useState('All');
+    const [activeFilter, setActiveFilter] = useState('Tous');
     const [checks, setChecks] = useState([
         {
             id: 1,
-            company: 'Hermes',
+            company: 'ESTA',
             logo: require('../../assets/images/hermes-logo.png'), // Replace with actual logo
-            amount: '$1,500.67',
+            amount: 'Ouaga',
             date: 'March 13, 2018',
-            category: 'Fashion',
-            status: 'Not received',
+            category: 'Journalisme',
+            status: 'En attente',
             checked: false
         },
         {
             id: 2,
-            company: 'Philipp Plein',
+            company: 'ISIG',
             logo: require('../../assets/images/philipp-plein-logo.png'),
-            amount: '$1,245.17',
+            amount: 'Bobo',
             date: 'March 13, 2018',
-            category: 'Fashion',
-            status: 'Not received',
+            category: 'Journalisme',
+            status: 'En attente',
             checked: false
         },
         {
             id: 3,
-            company: 'L\'Octane',
+            company: 'USTA',
             logo: require('../../assets/images/loctane-logo.png'),
-            amount: '$545.28',
+            amount: 'Ouaga',
             date: 'March 13, 2018',
-            category: 'Fashion',
-            status: 'Not received',
+            category: 'Journalisme',
+            status: 'En attente',
             checked: false
         },
         {
             id: 4,
-            company: 'Kenzo',
+            company: 'UJKZ',
             logo: require('../../assets/images/kenzo-logo.png'),
-            amount: '$375.37',
+            amount: 'Ouaga',
             date: 'March 13, 2018',
-            status: 'Not received',
-            category: 'Fashion',
+            status: 'En attente',
+            category: 'Journalisme',
             checked: false
         }
     ]);
 
-    const filters = ['All', 'Fashion', 'Electronics', 'Food', 'Services'];
+    const filters = ['Tous', 'Journalisme', 'Electronique', 'Informatique', 'Autres'];
 
     const toggleCheck = (id: number) => {
         setChecks(checks.map(check =>
@@ -59,7 +60,7 @@ const UniversiteScreen = () => {
 
     const filteredChecks = checks.filter(check => {
         const matchesSearch = check.company.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesFilter = activeFilter === 'All' || check.category === activeFilter;
+        const matchesFilter = activeFilter === 'Tous' || check.category === activeFilter;
         return matchesSearch && matchesFilter;
     });
 
@@ -89,7 +90,7 @@ const UniversiteScreen = () => {
                     </View>
                 ) : (
                     <>
-                        <Text style={styles.title}>My Checks</Text>
+                        <Text style={styles.title}>Les Universités</Text>
                         <View style={styles.headerIcons}>
                             <TouchableOpacity
                                 style={styles.iconButton}
@@ -137,7 +138,8 @@ const UniversiteScreen = () => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.content}
                 renderItem={({ item }) => (
-                    <View style={styles.card}>
+                    <Link href={`/settings/universiteDetail`} key={item.id} asChild>
+                    <TouchableOpacity style={styles.card}>
                         <View style={styles.cardHeader}>
                             <View style={styles.companyInfo}>
                                 <Image source={item.logo} style={styles.logo} />
@@ -154,15 +156,15 @@ const UniversiteScreen = () => {
 
                         <View style={styles.details}>
                             <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Amount</Text>
+                                <Text style={styles.detailLabel}>Ville</Text>
                                 <Text style={styles.detailValue}>{item.amount}</Text>
                             </View>
                             <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Date</Text>
+                                <Text style={styles.detailLabel}>Rejoins le</Text>
                                 <Text style={styles.detailValue}>{item.date}</Text>
                             </View>
                             <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Status</Text>
+                                <Text style={styles.detailLabel}>Statut</Text>
                                 <Text style={[
                                     styles.detailValue,
                                     item.status === 'Received' ? styles.statusReceived : styles.statusNotReceived
@@ -171,7 +173,8 @@ const UniversiteScreen = () => {
                                 </Text>
                             </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
+                    </Link>
                 )}
             />
         </View>
