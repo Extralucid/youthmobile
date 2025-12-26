@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.maqom.youthc"
     },
     "web": {
       "bundler": "metro",
@@ -25,6 +26,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-localization",
       [
         "expo-splash-screen",
         {
@@ -33,10 +35,19 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-video",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8b6a5be8-8726-4310-94f1-28a51b5f843b"
+      }
     }
   }
 }

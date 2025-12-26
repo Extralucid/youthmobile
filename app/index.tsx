@@ -1,10 +1,18 @@
+import McText from '@/components/McText/McText';
+import McVectorIcon from '@/components/McVectorIcon/McVectorIcon';
+import ImageSlider from '@/components/slider/ImageSlider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Badge, Snackbar } from 'react-native-paper';
+
+// Calculate card width based on screen width
+const { width } = Dimensions.get('window');
+const CARD_GAP = 12;
+const CARD_WIDTH = (width - (CARD_GAP * 6.5)) / 3; // 3 cards with gaps on both sides
 
 export default function Index() {
   const [nom, setNom] = useState('');
@@ -14,23 +22,59 @@ export default function Index() {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [photo, setPhoto] = useState(null);
-  const youthbaseurl = 'https://gesmuttest.menet.ci:5482/img/';
   const router = useRouter();
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const blurhash =
- '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+    '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
   const getItems = async () => {
 
   };
 
-  const Item = ( title: any, image: any ) => (
-    <View style={{ borderWidth: 1, width: '33.33%', padding: 8 }}>
-      <TouchableOpacity style={styles.boxItems}>
-        <Image source={require('../assets/images/healthicons_pharmacy.png')} />
-      </TouchableOpacity>
-    </View>
-  );
+  const services = [
+    {
+      title: 'Offres',
+      icon: 'FontAwesome',
+      name: "briefcase",
+      size: 24,
+      href: '/job'
+    },
+    {
+      title: 'Blogs',
+      icon: 'FontAwesome5',
+      name: "newspaper",
+      size: 24,
+      href: '/blog'
+    },
+    {
+      title: 'Tutoriels',
+      icon: 'FontAwesome',
+      name: "graduation-cap",
+      size: 24,
+      href: '/tutorials'
+    },
+    {
+      title: 'Podcasts',
+      icon: 'FontAwesome',
+      name: "podcast",
+      size: 24,
+      href: '/podcast'
+    },
+    {
+      title: 'Chat',
+      icon: 'MaterialIcons',
+      name: "support-agent",
+      size: 24,
+      href: '/chat'
+    },
+    {
+      title: 'Autres',
+      icon: 'MaterialCommunityIcons',
+      name: "bullhorn",
+      size: 24,
+      href: '/settings/services'
+    },
+  ];
 
   //const renderItem = ({ item }) => <Item image={item.image} title={item.title} />;
 
@@ -45,7 +89,7 @@ export default function Index() {
     // await AsyncStorage.removeItem('aphoto');
     setLoading(false);
     console.log('deconnexion');
-    
+
     router.replace('/auth/login');
   };
 
@@ -102,47 +146,17 @@ export default function Index() {
           </View>
         </View>
         <View style={styles.slider}>
-          <ImageBackground
-            source={require('../assets/images/education.jpg')}
-            resizeMode="cover"
-            imageStyle={{ borderRadius: 15 }}
-            style={{ flex: 1, justifyContent: 'center' }}
-          >
-            <Text
-              style={{
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: 15,
-                position: 'relative',
-                top: '25%',
-                left: '5%',
-              }}
-            >
-              Le social au coeur de
-            </Text>
-            <Text
-              style={{
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: 15,
-                position: 'relative',
-                top: '25%',
-                left: '5%',
-              }}
-            >
-              nos actions
-            </Text>
-          </ImageBackground>
+          <ImageSlider />
         </View>
         <View style={styles.boxes}>
           <TouchableOpacity
             style={styles.orangeBox}
             onPress={() => { }}
           >
-            <Text style={styles.textBoxes}>Mes</Text>
-            <Text style={styles.textBoxes}>Ressources</Text>
+            <Text style={styles.textBoxes}>Liens</Text>
+            <Text style={styles.textBoxes}>d'orientation</Text>
             <MaterialCommunityIcons
-              name="book-open"
+              name="at"
               color="#fff"
               size={30}
               style={{ position: 'absolute', bottom: 10, right: 10 }}
@@ -161,62 +175,49 @@ export default function Index() {
         </View>
         <View style={styles.line}></View>
         <View style={styles.menuItems}>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={styles.boxItems}
-              onPress={() => { }}
-            >
-              <MaterialCommunityIcons name="offer" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 11 }}>Offres/Stages</Text>
-          </View>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={styles.boxItems}
-              onPress={() => { }}
-            >
-              <MaterialCommunityIcons name="plex" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 11 }}>Tutoriels</Text>
-          </View>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={styles.boxItems}
-              onPress={() => { }}
-            >
-               <MaterialCommunityIcons name="podcast" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 11 }}>
-              Podcasts
-            </Text>
-          </View>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={styles.boxItems}
-              onPress={() => { }}
-            >
-             <MaterialCommunityIcons name="newspaper" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 10 }}>
-              Blog
-            </Text>
-          </View>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={styles.boxItems}
-              onPress={() => { }}
-            >
-             <MaterialCommunityIcons name="chat" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 11 }}>
-              Communauté
-            </Text>
-          </View>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity style={styles.boxItems} onPress={() => { }}>
-              <MaterialCommunityIcons name="dots-horizontal" color="#06803A" size={40} />
-            </TouchableOpacity>
-            <Text style={{ textAlign: 'center', fontWeight: '500', fontSize: 11 }}>Autres</Text>
+
+          <Text style={styles.menuHeader}>Ressources et Opportunités</Text>
+
+          <View style={styles.grid}>
+            {services.map((service, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => { router.navigate(service.href) }}
+                style={{
+                  height: 102, width: CARD_WIDTH
+                }}>
+                <View
+                  style={{
+                    width: 80,
+                    height: 72,
+                    borderRadius: 12,
+                    backgroundColor: '#f7dfc9ff',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    ...styles.boxItems
+                  }}>
+                  {/* <McImage source={item.img} /> */}
+                  <McVectorIcon
+                    type={service.icon}
+                    size={service.size}
+                    name={service.name}
+                    color='#3A4276'
+                  />
+                </View>
+                <McText
+                  semi
+                  size={10}
+                  color='#7B7F9E'
+                  style={{
+                    marginTop: 6,
+                    width: 52,
+                    textAlign: 'center',
+                    fontWeight: 'bold'
+                  }}>
+                  {service.title}
+                </McText>
+              </TouchableOpacity >
+            ))}
           </View>
         </View>
         {loading ? (
@@ -250,6 +251,11 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff',
   },
+  serviceContainer: {
+    padding: CARD_GAP,
+    backgroundColor: '#f8f9fa',
+    paddingBottom: 10,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -257,22 +263,28 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
   },
+  menuHeader: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#333',
+    paddingHorizontal: 4,
+  },
   boxItems: {
-    width: '85%',
-    height: 78,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    margin: 2,
     shadowOffset: {
       width: 3,
       height: 0,
     },
-    shadowColor: '#000000',
+    shadowColor: '#746a6aff',
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 4,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: CARD_GAP,
   },
   boxContainer: {
     width: '30%',
@@ -297,7 +309,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
   boxes: {
-    marginTop: '3%',
+    marginTop: '10%',
     height: '20%',
     paddingLeft: 15,
     paddingRight: 20,
