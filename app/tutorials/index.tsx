@@ -1,5 +1,5 @@
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Image,
@@ -24,6 +24,7 @@ type Tutorial = {
 
 const TutorialsScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
     const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
 
     // Sample tutorial data
@@ -54,19 +55,44 @@ const TutorialsScreen = () => {
     return (
         <View style={styles.container}>
             {/* Search Bar */}
-            <View style={styles.searchContainer}>
-                <Feather name="search" size={20} color="#999" style={styles.searchIcon} />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search tutorials..."
-                    placeholderTextColor="#999"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                />
-                {searchQuery.length > 0 && (
-                    <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
-                        <MaterialIcons name="clear" size={20} color="#999" />
-                    </TouchableOpacity>
+            <View style={styles.header}>
+                {showSearch ? (
+                    <View style={styles.searchContainer}>
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search checks..."
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            autoFocus={true}
+                        />
+                        <TouchableOpacity
+                            style={styles.closeSearch}
+                            onPress={() => {
+                                setShowSearch(false);
+                                setSearchQuery('');
+                            }}
+                        >
+                            <Ionicons name="close" size={24} color="#666" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                            <Ionicons name="arrow-back" size={24} color="#333" />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>Formations || Tutoriels</Text>
+                        <View style={styles.headerIcons}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={() => setShowSearch(true)}
+                            >
+                                <Ionicons name="search" size={24} color="#333" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.iconButton} onPress={() => router.navigate('/tutorials/createTutorial')}>
+                                <Ionicons name="add-circle" size={24} color="#333" />
+                            </TouchableOpacity>
+                        </View>
+                    </>
                 )}
             </View>
 
@@ -149,32 +175,55 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f9fa',
         paddingHorizontal: 16,
     },
-    searchContainer: {
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        paddingTop: 40,
+        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    backButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        marginBottom: 16,
-        marginTop: 40,
-        height: 48,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
+    },
+    backText: {
+        marginLeft: 8,
+        fontSize: 16,
+        color: '#333',
+    },
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    headerIcons: {
+        flexDirection: 'row',
+    },
+    iconButton: {
+        marginLeft: 16,
     },
     searchIcon: {
         marginRight: 8,
     },
+    searchContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        height: 40,
+    },
     searchInput: {
         flex: 1,
         height: '100%',
-        fontSize: 16,
-        color: '#333',
+        paddingVertical: 0,
     },
-    clearButton: {
-        padding: 4,
+    closeSearch: {
+        marginLeft: 8,
     },
     difficultyContainer: {
         paddingVertical: 8,

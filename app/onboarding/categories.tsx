@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
+import { Chips } from 'react-native-material-chips';
 type PreferenceItem = {
   id: string;
   name: string;
@@ -27,14 +27,24 @@ const CategoriesScreen = () => {
     { id: 'gaming', name: 'Gaming' },
   ];
 
-    // Animation values
+  const [items, setItems] = useState([
+    {label: 'Technologies', value: '1'},
+    {label: 'ICT4D', value: '2'},
+    {label: 'Music', value: '3'},
+    {label: 'Sports', value: '4'},
+    {label: 'Cuisine', value: '5'},
+    {label: 'Education', value: '6'},
+  ]);
+  const [selectedValues, setSelectedValues] = useState(['1', '2']);
+
+  // Animation values
   const scaleAnimations = categories.reduce((acc, category) => {
     acc[category.id] = new Animated.Value(1);
     return acc;
   }, {} as Record<string, Animated.Value>);
 
   // Filter categories based on search
-  const filteredCategories = categories.filter(cat => 
+  const filteredCategories = categories.filter(cat =>
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   // Load saved categories
@@ -61,7 +71,7 @@ const CategoriesScreen = () => {
     );
   };
 
-    // Save preferences and navigate
+  // Save preferences and navigate
   const handleSubmit = async () => {
     try {
       const preferences = {
@@ -87,10 +97,10 @@ const CategoriesScreen = () => {
   const handleContinue = async () => {
     try {
       const existingPrefs = await AsyncStorage.getItem('userPreferences');
-      const preferences = existingPrefs 
+      const preferences = existingPrefs
         ? { ...JSON.parse(existingPrefs), categories: selectedCategories }
         : { categories: selectedCategories, skills: [] };
-      
+
       await AsyncStorage.setItem('userPreferences', JSON.stringify(preferences));
       router.push('/onboarding/skills');
     } catch (error) {
@@ -116,8 +126,8 @@ const CategoriesScreen = () => {
       </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Choisissez vos Interets</Text>
-        
+        <Text style={styles.title}>Catégories préférées</Text>
+
         {/* Search Input */}
         <TextInput
           style={styles.searchInput}
@@ -127,30 +137,18 @@ const CategoriesScreen = () => {
           placeholderTextColor="#999"
         />
 
-        <Text style={styles.subtitle}>Choisissez les catégories qui vous intéressent</Text>
-        
+        <Text style={styles.subtitle}>Marquez vos catégories préférées</Text>
+
         <View style={styles.tagsContainer}>
-          {filteredCategories.map((category) => (
-            <Animated.View 
-              key={category.id}
-              style={{ transform: [{ scale: scaleAnimations[category.id] }] }}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.tag,
-                  selectedCategories.includes(category.id) && styles.selectedTag
-                ]}
-                onPress={() => toggleCategory(category.id)}
-              >
-                <Text style={[
-                  styles.tagText,
-                  selectedCategories.includes(category.id) && styles.selectedTagText
-                ]}>
-                  {category.name}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          ))}
+          <Chips
+                type="filter"
+                itemVariant="outlined"
+                items={items}
+                setItems={setItems}
+                selectedValues={selectedValues}
+                setSelectedValues={setSelectedValues}
+              />
+          
         </View>
 
         {totalSelections > 0 && totalSelections < MIN_SELECTIONS && (
@@ -167,7 +165,7 @@ const CategoriesScreen = () => {
         >
           <Text style={styles.skipButtonText}>Sauter</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[
             styles.button,
@@ -275,7 +273,7 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingVertical: 10,
-    paddingHorizontal: 25,
+    paddingHorizontal: 10,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,8 +1,8 @@
 import {
-    AntDesign,
-    Feather,
-    Ionicons,
-    MaterialIcons
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialIcons
 } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -10,13 +10,13 @@ import * as IntentLauncher from 'expo-intent-launcher';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
-    Image,
-    Linking,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 type Section = {
@@ -70,19 +70,23 @@ const TutorialDetailScreen = () => {
         id: '1',
         title: 'Introduction to React Native',
         type: 'video',
-        duration: '15:20',
-        contentUrl: 'https://example.com/video1.mp4',
+        duration: '9:56',
+        contentUrl: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
         completed: true
       },
       {
         id: '2',
         title: 'Core Components Guide',
         type: 'pdf',
-        contentUrl: 'https://example.com/pdf1.pdf'
+        contentUrl: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'
       },
       // More sections...
     ],
     resources: [
+      {
+        title: 'React Native Documentation',
+        url: 'https://reactnative.dev/docs/getting-started'
+      },
       {
         title: 'React Native Documentation',
         url: 'https://reactnative.dev/docs/getting-started'

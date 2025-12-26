@@ -1,14 +1,14 @@
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 type Forum = {
@@ -26,6 +26,7 @@ type Forum = {
 
 const ForumScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
   // Sample forum data
   const forums: Forum[] = [
@@ -57,7 +58,7 @@ const ForumScreen = () => {
   ];
 
   // Filter forums based on search
-  const filteredForums = forums.filter(forum => 
+  const filteredForums = forums.filter(forum =>
     forum.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     forum.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -65,19 +66,44 @@ const ForumScreen = () => {
   return (
     <View style={styles.container}>
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Feather name="search" size={20} color="#999" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search forums..."
-          placeholderTextColor="#999"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
-            <MaterialIcons name="clear" size={20} color="#999" />
-          </TouchableOpacity>
+      <View style={styles.header}>
+        {showSearch ? (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search checks..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+            />
+            <TouchableOpacity
+              style={styles.closeSearch}
+              onPress={() => {
+                setShowSearch(false);
+                setSearchQuery('');
+              }}
+            >
+              <Ionicons name="close" size={24} color="#666" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.title}> Forums disponibles</Text>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowSearch(true)}
+              >
+                <Ionicons name="search" size={24} color="#333" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="add-circle" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+          </>
         )}
       </View>
 
@@ -88,8 +114,8 @@ const ForumScreen = () => {
             <Link href={`/forum/forumDetail`} key={forum.id} asChild>
               <TouchableOpacity style={styles.forumCard}>
                 <View style={styles.forumHeader}>
-                  <Image 
-                    source={{ uri: forum.icon }} 
+                  <Image
+                    source={{ uri: forum.icon }}
                     style={styles.forumIcon}
                   />
                   <View style={styles.forumInfo}>
@@ -98,7 +124,7 @@ const ForumScreen = () => {
                   </View>
                   <MaterialIcons name="chevron-right" size={24} color="#999" />
                 </View>
-                
+
                 <View style={styles.forumStats}>
                   <View style={styles.statItem}>
                     <Text style={styles.statNumber}>{forum.topicsCount}</Text>
@@ -136,32 +162,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
     paddingHorizontal: 16,
   },
-  searchContainer: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 40,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    marginTop: 40,
-    height: 48,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  },
+  backText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginLeft: 16,
   },
   searchIcon: {
     marginRight: 8,
   },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 40,
+  },
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 16,
-    color: '#333',
+    paddingVertical: 0,
   },
-  clearButton: {
-    padding: 4,
+  closeSearch: {
+    marginLeft: 8,
   },
   forumsContainer: {
     paddingBottom: 32,

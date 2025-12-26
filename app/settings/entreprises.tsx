@@ -1,4 +1,6 @@
 // MyChecksScreen.tsx
+import { Ionicons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
   FlatList,
@@ -87,32 +89,34 @@ export default function EntreprisesScreen() {
 
   /* ---------- Render ---------- */
   const renderItem = ({ item }: { item: Check }) => (
-    <TouchableOpacity style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.brandRow}>
-          <Image source={item.logo} style={styles.logo} />
-          <Text style={styles.brandText}>{item.brand}</Text>
+    <Link href={`/settings/entrepriseDetail`} key={item.id} asChild>
+      <TouchableOpacity style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.brandRow}>
+            <Image source={item.logo} style={styles.logo} />
+            <Text style={styles.brandText}>{item.brand}</Text>
+          </View>
+          <Pressable style={styles.checkbox}>
+            <View style={styles.checkboxInner} />
+          </Pressable>
         </View>
-        <Pressable style={styles.checkbox}>
-          <View style={styles.checkboxInner} />
-        </Pressable>
-      </View>
 
-      <View style={styles.labelsRow}>
-        <View style={styles.labelGroup}>
-          <Text style={styles.label}>Souscription</Text>
-          <Text style={styles.value}>{item.amount}</Text>
+        <View style={styles.labelsRow}>
+          <View style={styles.labelGroup}>
+            <Text style={styles.label}>Souscription</Text>
+            <Text style={styles.value}>{item.amount}</Text>
+          </View>
+          <View style={styles.labelGroup}>
+            <Text style={styles.label}>Rejoint le</Text>
+            <Text style={styles.value}>{item.date}</Text>
+          </View>
+          <View style={styles.labelGroup}>
+            <Text style={styles.label}>Statut</Text>
+            <Text style={[styles.value, styles.status]}>{item.status}</Text>
+          </View>
         </View>
-        <View style={styles.labelGroup}>
-          <Text style={styles.label}>Rejoint le</Text>
-          <Text style={styles.value}>{item.date}</Text>
-        </View>
-        <View style={styles.labelGroup}>
-          <Text style={styles.label}>Statut</Text>
-          <Text style={[styles.value, styles.status]}>{item.status}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Link>
   );
 
   const renderChip = (label: string) => (
@@ -139,6 +143,9 @@ export default function EntreprisesScreen() {
     <View style={styles.container}>
       {/* ---------- Header ---------- */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
         <Text style={styles.title}>Les entreprises</Text>
         <View style={styles.headerButtons}>
           <Pressable onPress={() => setShowSearch(!showSearch)}>
@@ -190,7 +197,7 @@ export default function EntreprisesScreen() {
 
 /* ---------- Styles ---------- */
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -200,6 +207,10 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     backgroundColor: '#fff',
     elevation: 2,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: { fontSize: 20, fontWeight: '600', color: '#111' },
   headerButtons: { flexDirection: 'row' },
@@ -220,7 +231,7 @@ const styles = StyleSheet.create({
   },
 
   chipsScroll: { backgroundColor: '#fff' },
-  chipsContent: { paddingHorizontal: 16, paddingVertical: 8, height:35, },
+  chipsContent: { paddingHorizontal: 16, paddingVertical: 8, height: 35, },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 6,

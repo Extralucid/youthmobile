@@ -153,10 +153,10 @@ export default function Index() {
             style={styles.orangeBox}
             onPress={() => { }}
           >
-            <Text style={styles.textBoxes}>Mes</Text>
-            <Text style={styles.textBoxes}>Ressources</Text>
+            <Text style={styles.textBoxes}>Liens</Text>
+            <Text style={styles.textBoxes}>d'orientation</Text>
             <MaterialCommunityIcons
-              name="book-open"
+              name="at"
               color="#fff"
               size={30}
               style={{ position: 'absolute', bottom: 10, right: 10 }}
@@ -176,7 +176,7 @@ export default function Index() {
         <View style={styles.line}></View>
         <View style={styles.menuItems}>
 
-          <Text style={styles.menuHeader}>Nos Services</Text>
+          <Text style={styles.menuHeader}>Ressources et Opportunités</Text>
 
           <View style={styles.grid}>
             {services.map((service, index) => (
@@ -212,6 +212,7 @@ export default function Index() {
                     marginTop: 6,
                     width: 52,
                     textAlign: 'center',
+                    fontWeight: 'bold'
                   }}>
                   {service.title}
                 </McText>

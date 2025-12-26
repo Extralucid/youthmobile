@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
+import { Chips } from 'react-native-material-chips';
 type PreferenceItem = {
   id: string;
   name: string;
@@ -25,6 +25,16 @@ const SkillsScreen = () => {
     { id: 'cooking', name: 'Cooking' },
   ];
 
+  const [items, setItems] = useState([
+    { label: 'Programmation', value: '1' },
+    { label: 'Design', value: '2' },
+    { label: 'Romancier', value: '3' },
+    { label: 'Marketing', value: '4' },
+    { label: 'Photographie', value: '5' },
+    { label: 'Leadership', value: '6' },
+  ]);
+
+  const [selectedValues, setSelectedValues] = useState(['1', '2']);
   // Animation values
   const scaleAnimations = skills.reduce((acc, skill) => {
     acc[skill.id] = new Animated.Value(1);
@@ -32,7 +42,7 @@ const SkillsScreen = () => {
   }, {} as Record<string, Animated.Value>);
 
   // Filter categories based on search
-  const filteredSkills = skills.filter(cat => 
+  const filteredSkills = skills.filter(cat =>
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   // Load saved skills
@@ -85,7 +95,7 @@ const SkillsScreen = () => {
     <View style={styles.container}>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Sélectionnez vos compétences</Text>
+        <Text style={styles.title}>Compétences acquises</Text>
 
         {/* Search Input */}
         <TextInput
@@ -96,30 +106,17 @@ const SkillsScreen = () => {
           placeholderTextColor="#999"
         />
 
-        <Text style={[styles.subtitle, { marginTop: 30 }]}>Selectionnez vos competences</Text>
+        <Text style={[styles.subtitle, { marginTop: 10 }]}>Marquez vos compétences</Text>
 
         <View style={styles.tagsContainer}>
-          {filteredSkills.map((skill) => (
-            <Animated.View
-              key={skill.id}
-              style={{ transform: [{ scale: scaleAnimations[skill.id] || 1 }] }}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.tag,
-                  selectedSkills.includes(skill.id) && styles.selectedTag
-                ]}
-                onPress={() => toggleSkill(skill.id)}
-              >
-                <Text style={[
-                  styles.tagText,
-                  selectedSkills.includes(skill.id) && styles.selectedTagText
-                ]}>
-                  {skill.name}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          ))}
+          <Chips
+            type="filter"
+            itemVariant="outlined"
+            items={items}
+            setItems={setItems}
+            selectedValues={selectedValues}
+            setSelectedValues={setSelectedValues}
+          />
         </View>
 
         {totalSelections > 0 && totalSelections < MIN_SELECTIONS && (
@@ -235,8 +232,8 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   button: {
-    paddingVertical: 15,
-    paddingHorizontal: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
@@ -250,6 +247,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#F59B21',
+    paddingVertical: 5,
   },
   disabledButton: {
     backgroundColor: '#cccccc',

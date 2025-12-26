@@ -1,8 +1,7 @@
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
 type BlogPost = {
     id: string;
     title: string;
@@ -14,6 +13,7 @@ type BlogPost = {
 };
 
 const BlogScreen = () => {
+    const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -67,26 +67,56 @@ const BlogScreen = () => {
         const matchesTag = activeTag ? post.tags.includes(activeTag) : true;
         return matchesSearch && matchesTag;
     });
+    const [checks, setChecks] = useState([
+
+    ]);
+
+    const filters = ['Tous', 'Journalisme', 'Electronique', 'Informatique', 'Autres'];
+
 
     return (
         <View style={styles.container}>
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-                <Feather name="search" size={20} color="#999" style={styles.searchIcon} />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search blog posts..."
-                    placeholderTextColor="#999"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                />
-                {searchQuery.length > 0 && (
-                    <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
-                        <MaterialIcons name="clear" size={20} color="#999" />
-                    </TouchableOpacity>
+            {/* Header */}
+            <View style={styles.header}>
+                {showSearch ? (
+                    <View style={styles.searchContainer}>
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search checks..."
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            autoFocus={true}
+                        />
+                        <TouchableOpacity
+                            style={styles.closeSearch}
+                            onPress={() => {
+                                setShowSearch(false);
+                                setSearchQuery('');
+                            }}
+                        >
+                            <Ionicons name="close" size={24} color="#666" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                            <Ionicons name="arrow-back" size={24} color="#333" />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>Les Articles de Blog</Text>
+                        <View style={styles.headerIcons}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={() => setShowSearch(true)}
+                            >
+                                <Ionicons name="search" size={24} color="#333" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.iconButton} onPress={() => router.navigate('/blog/createBlog')}>
+                                <Ionicons name="add-circle" size={24} color="#333" />
+                            </TouchableOpacity>
+                        </View>
+                    </>
                 )}
             </View>
-
             {/* Tags Filter */}
             <ScrollView
                 horizontal
@@ -153,41 +183,45 @@ const BlogScreen = () => {
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 32;
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
         paddingHorizontal: 16,
+        backgroundColor: '#f5f5f5',
     },
-    searchContainer: {
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        paddingTop: 50,
+        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+        backButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        marginBottom: 16,
-        marginTop: 40,
-        height: 48,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
     },
-    searchIcon: {
-        marginRight: 8,
-    },
-    searchInput: {
-        flex: 1,
-        height: '100%',
+    backText: {
+        marginLeft: 8,
         fontSize: 16,
         color: '#333',
     },
-    clearButton: {
-        padding: 4,
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
     },
-    tagsContainer: {
+    headerIcons: {
+        flexDirection: 'row',
+    },
+    iconButton: {
+        marginLeft: 16,
+    },
+    content: {
+        padding: 16,
+    }, tagsContainer: {
         paddingVertical: 8,
         marginBottom: 16,
         paddingRight: 16,
@@ -287,6 +321,53 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#999',
         marginTop: 4,
+    },
+    // ... previous styles ...
+    searchContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        height: 40,
+    },
+    searchInput: {
+        flex: 1,
+        height: '100%',
+        paddingVertical: 0,
+    },
+    closeSearch: {
+        marginLeft: 8,
+    },
+    filterContainer: {
+        paddingVertical: 8,
+        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    filterContent: {
+        paddingHorizontal: 16,
+        alignItems: 'center',
+    },
+    filterChip: {
+        paddingHorizontal: 16,
+        paddingVertical: 5,
+        height: 30,
+        borderRadius: 16,
+        backgroundColor: '#f0f0f0',
+        marginRight: 8,
+    },
+    activeFilterChip: {
+        backgroundColor: '#4CAF50',
+    },
+    filterText: {
+        color: '#666',
+        fontSize: 14,
+    },
+    activeFilterText: {
+        color: 'white',
+        fontWeight: '500',
     },
 });
 

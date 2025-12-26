@@ -35,12 +35,12 @@ export default function SignupScreen() {
 
   const goToLogin = async () => {
     router.replace('/auth/login');
-     router.replace('/onboarding/categories');
+     //router.replace('/onboarding/categories');
   };
 
 
     const goToHome = async () => {
-     router.replace('/onboarding/categories');
+     //router.replace('/onboarding/categories');
   };
 
 
@@ -48,7 +48,7 @@ export default function SignupScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
         <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        <Text style={styles.fieldsetTitle}>Youth Connect BF</Text>
+        <Text style={styles.fieldsetTitle}>YouthConnekt BF</Text>
         <View style={styles.formGroup}>
           <TextInput
             label="Nom"

@@ -1,10 +1,13 @@
 // app/(tabs)/chats/index.tsx
-import { Link } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ChatRoom } from '../types/chats';
 
 const ChatRoomsScreen = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   // Dummy data for chat rooms
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([
     {
@@ -38,8 +41,8 @@ const ChatRoomsScreen = () => {
 
   const renderItem = ({ item }: { item: ChatRoom }) => (
     <Link href={{
-        pathname: `/chat/conversation`,
-        params: { id: item.id, other: "anything you want here" },
+      pathname: `/chat/conversation`,
+      params: { id: item.id, other: "anything you want here" },
     }} asChild>
       <TouchableOpacity style={styles.chatItem}>
         <Image source={{ uri: item.avatar }} style={styles.avatar} />
@@ -63,6 +66,46 @@ const ChatRoomsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        {showSearch ? (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search checks..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+            />
+            <TouchableOpacity
+              style={styles.closeSearch}
+              onPress={() => {
+                setShowSearch(false);
+                setSearchQuery('');
+              }}
+            >
+              <Ionicons name="close" size={24} color="#666" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Liste de discussions</Text>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowSearch(true)}
+              >
+                <Ionicons name="search" size={24} color="#333" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="add-circle" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </View>
       <FlatList
         data={chatRooms}
         renderItem={renderItem}
@@ -75,8 +118,58 @@ const ChatRoomsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 40,
+    paddingTop: 20,
     backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 30,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginLeft: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 40,
+  },
+  searchInput: {
+    flex: 1,
+    height: '100%',
+    paddingVertical: 0,
+  },
+  closeSearch: {
+    marginLeft: 8,
   },
   chatItem: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -90,6 +90,9 @@ const UniversiteScreen = () => {
                     </View>
                 ) : (
                     <>
+                        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                            <Ionicons name="arrow-back" size={24} color="#333" />
+                        </TouchableOpacity>
                         <Text style={styles.title}>Les Universités</Text>
                         <View style={styles.headerIcons}>
                             <TouchableOpacity
@@ -139,41 +142,41 @@ const UniversiteScreen = () => {
                 contentContainerStyle={styles.content}
                 renderItem={({ item }) => (
                     <Link href={`/settings/universiteDetail`} key={item.id} asChild>
-                    <TouchableOpacity style={styles.card}>
-                        <View style={styles.cardHeader}>
-                            <View style={styles.companyInfo}>
-                                <Image source={item.logo} style={styles.logo} />
-                                <Text style={styles.companyName}>{item.company}</Text>
+                        <TouchableOpacity style={styles.card}>
+                            <View style={styles.cardHeader}>
+                                <View style={styles.companyInfo}>
+                                    <Image source={item.logo} style={styles.logo} />
+                                    <Text style={styles.companyName}>{item.company}</Text>
+                                </View>
+                                <TouchableOpacity onPress={() => toggleCheck(item.id)}>
+                                    <MaterialIcons
+                                        name={item.checked ? "check-box" : "check-box-outline-blank"}
+                                        size={24}
+                                        color={item.checked ? "#4CAF50" : "#ccc"}
+                                    />
+                                </TouchableOpacity>
                             </View>
-                            <TouchableOpacity onPress={() => toggleCheck(item.id)}>
-                                <MaterialIcons
-                                    name={item.checked ? "check-box" : "check-box-outline-blank"}
-                                    size={24}
-                                    color={item.checked ? "#4CAF50" : "#ccc"}
-                                />
-                            </TouchableOpacity>
-                        </View>
 
-                        <View style={styles.details}>
-                            <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Ville</Text>
-                                <Text style={styles.detailValue}>{item.amount}</Text>
+                            <View style={styles.details}>
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Ville</Text>
+                                    <Text style={styles.detailValue}>{item.amount}</Text>
+                                </View>
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Rejoins le</Text>
+                                    <Text style={styles.detailValue}>{item.date}</Text>
+                                </View>
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Statut</Text>
+                                    <Text style={[
+                                        styles.detailValue,
+                                        item.status === 'Received' ? styles.statusReceived : styles.statusNotReceived
+                                    ]}>
+                                        {item.status}
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Rejoins le</Text>
-                                <Text style={styles.detailValue}>{item.date}</Text>
-                            </View>
-                            <View style={styles.detailRow}>
-                                <Text style={styles.detailLabel}>Statut</Text>
-                                <Text style={[
-                                    styles.detailValue,
-                                    item.status === 'Received' ? styles.statusReceived : styles.statusNotReceived
-                                ]}>
-                                    {item.status}
-                                </Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
                     </Link>
                 )}
             />
@@ -195,6 +198,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
+    },
+
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     title: {
         fontSize: 16,

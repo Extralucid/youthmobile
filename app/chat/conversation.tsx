@@ -1,5 +1,6 @@
 // app/chats/[id].tsx
-import { useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { io, Socket } from 'socket.io-client';
@@ -8,6 +9,9 @@ import { Message } from '../types/chats';
 const ChatScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const [message, setMessage] = useState('');
   const socketRef = useRef<Socket | null>(null);
   const flatListRef = useRef<FlatList>(null);
@@ -112,6 +116,43 @@ const ChatScreen = () => {
       style={styles.container}
       keyboardVerticalOffset={90}
     >
+      <View style={styles.header}>
+        {showSearch ? (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search checks..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+            />
+            <TouchableOpacity
+              style={styles.closeSearch}
+              onPress={() => {
+                setShowSearch(false);
+                setSearchQuery('');
+              }}
+            >
+              <Ionicons name="close" size={24} color="#666" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Discussion en cours</Text>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowSearch(true)}
+              >
+                <Ionicons name="search" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </View>
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -140,15 +181,65 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 40,
+    paddingTop: 20,
     backgroundColor: '#f5f5f5',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 30,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginLeft: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 40,
+  },
+  searchInput: {
+    flex: 1,
+    height: '100%',
+    paddingVertical: 0,
+  },
+  closeSearch: {
+    marginLeft: 8,
   },
   messagesList: {
     padding: 15,
   },
   otherMessage: {
-  alignItems: 'flex-start',
-},
+    alignItems: 'flex-start',
+  },
   messageContainer: {
     marginBottom: 15,
     alignItems: 'flex-start',

@@ -1,8 +1,9 @@
 import {
   Feather,
+  Ionicons,
   MaterialIcons
 } from '@expo/vector-icons';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Image,
@@ -101,6 +102,20 @@ const ForumDetailScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Forum Header */}
+      <View style={styles.head}>
+          <>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.title}> Details forum</Text>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="menu" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+          </>
+      </View>
+
       <View style={styles.header}>
         <Image 
           source={{ uri: forum.icon }} 
@@ -219,11 +234,41 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     backgroundColor: '#f8f9fa',
   },
+  head: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 40,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginLeft: 16,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: 40,
+    marginTop: 20,
   },
   forumIcon: {
     width: 60,

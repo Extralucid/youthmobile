@@ -9,7 +9,7 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
-    
+
   const [finger, setFinger] = useState(null);
   const [identifiant, setIdentifiant] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const [visible, setVisible] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-const router = useRouter();
+  const router = useRouter();
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
 
@@ -30,7 +30,13 @@ const router = useRouter();
       setMessage('Remplissez tous les champs !');
       onToggleSnackBar();
     } else {
-      await login();
+      if (identifiant == 'honore.ouedraogo@maqom.org' || identifiant == '75552635') {
+        await login();
+
+      } else {
+        setMessage('Acces incorrecte !');
+        onToggleSnackBar();
+      }
     }
   }
 
@@ -38,18 +44,18 @@ const router = useRouter();
     router.replace('/auth/signup');
   };
 
-    const goToForgot = async () => {
+  const goToForgot = async () => {
     router.replace('/auth/forgetPassword');
   };
 
   const scanFingerprint = async () => {
-     const email = await AsyncStorage.getItem('email');
-     const pwd = await AsyncStorage.getItem('pwd');
+    const email = await AsyncStorage.getItem('email');
+    const pwd = await AsyncStorage.getItem('pwd');
 
     // if (!email || !pwd) return;
 
     let result = await LocalAuthentication.authenticateAsync();
-     console.log('Scan Result:', result);
+    console.log('Scan Result:', result);
     //setFinger(JSON.stringify(result));
     if (result.success == true) {
       await loginWithFingerPrint(email, pwd);
@@ -169,11 +175,11 @@ const router = useRouter();
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
         <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        <Text style={styles.fieldsetTitle}>Youth Connect BF</Text>
+        <Text style={styles.fieldsetTitle}>YouthConnekt BF</Text>
         <View style={styles.formGroup}>
           <TextInput
             label="Email ou Téléphone"
-            placeholder="Entrez votre adresse mail"
+            placeholder="Entrez votre mail ou Tel"
             value={identifiant}
             style={styles.textInput}
             activeUnderlineColor="#ABBAC8"
@@ -192,8 +198,8 @@ const router = useRouter();
             onChangeText={(text) => setPassword(text)}
             right={<TextInput.Icon icon="eye" onPress={() => AffichePassword()} />}
           />
-          <Text style={styles.forgetPasswordText} onPress={() => {goToForgot();}}>Mot
-                        de passe oublié ?</Text>
+          <Text style={styles.forgetPasswordText} onPress={() => { goToForgot(); }}>Mot
+            de passe oublié ?</Text>
           <Button mode="contained" style={styles.buttonLogin} onPress={() => redirect()}>
             Se connecter
           </Button>
@@ -213,7 +219,7 @@ const router = useRouter();
             <Text style={{ flex: 1, fontSize: 17, textAlign: 'center' }}>Ou</Text>
             <View style={styles.rightLine}></View>
           </View>
-          <Text style={styles.SignInTitle} onPress={() => {goToRegister();}}>
+          <Text style={styles.SignInTitle} onPress={() => { goToRegister(); }}>
             Inscrivez-vous
           </Text>
         </View>
