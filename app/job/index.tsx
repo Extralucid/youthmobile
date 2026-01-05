@@ -39,7 +39,7 @@ const JobsScreen = () => {
       id: "1",
       employer: {
         name: "TechCorp",
-        logo: "https://logo.clearbit.com/techcorp.com",
+        logo: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=200&h=200&fit=crop",
       },
       title: "Senior React Native Developer",
       type: "Full-time",
@@ -52,7 +52,7 @@ const JobsScreen = () => {
       id: "2",
       employer: {
         name: "DesignHub",
-        logo: "https://logo.clearbit.com/designhub.com",
+        logo: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=200&h=200&fit=crop",
       },
       title: "UI/UX Designer",
       type: "Contract",
@@ -65,7 +65,7 @@ const JobsScreen = () => {
       id: "3",
       employer: {
         name: "DataSystems",
-        logo: "https://logo.clearbit.com/datasystems.com",
+        logo: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?w=200&h=200&fit=crop",
       },
       title: "Data Scientist",
       type: "Full-time",
@@ -78,7 +78,7 @@ const JobsScreen = () => {
       id: "4",
       employer: {
         name: "CloudNine",
-        logo: "https://logo.clearbit.com/cloudnine.com",
+        logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
       },
       title: "DevOps Engineer",
       type: "Full-time",
@@ -91,7 +91,7 @@ const JobsScreen = () => {
       id: "5",
       employer: {
         name: "MobileFirst",
-        logo: "https://logo.clearbit.com/mobilefirst.com",
+        logo: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&fit=crop",
       },
       title: "Flutter Developer",
       type: "Part-time",
@@ -171,47 +171,48 @@ const JobsScreen = () => {
       </View>
 
       {/* Job Type Filter */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.jobTypesContainer}
-        style={styles.filterContainer}
-      >
-        <TouchableOpacity
-          style={[styles.jobType, !selectedJobType && styles.activeJobType]}
-          onPress={() => setSelectedJobType(null)}
+      <View style={styles.filterContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.jobTypesContainer}
         >
-          <Text
-            style={[
-              styles.jobTypeText,
-              !selectedJobType && styles.activeJobTypeText,
-            ]}
-          >
-            All
-          </Text>
-        </TouchableOpacity>
-        {jobTypes.map((type) => (
           <TouchableOpacity
-            key={type}
-            style={[
-              styles.jobType,
-              selectedJobType === type && styles.activeJobType,
-            ]}
-            onPress={() =>
-              setSelectedJobType(type === selectedJobType ? null : type)
-            }
+            style={[styles.jobType, !selectedJobType && styles.activeJobType]}
+            onPress={() => setSelectedJobType(null)}
           >
             <Text
               style={[
                 styles.jobTypeText,
-                selectedJobType === type && styles.activeJobTypeText,
+                !selectedJobType && styles.activeJobTypeText,
               ]}
             >
-              {type}
+              All
             </Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+          {jobTypes.map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={[
+                styles.jobType,
+                selectedJobType === type && styles.activeJobType,
+              ]}
+              onPress={() =>
+                setSelectedJobType(type === selectedJobType ? null : type)
+              }
+            >
+              <Text
+                style={[
+                  styles.jobTypeText,
+                  selectedJobType === type && styles.activeJobTypeText,
+                ]}
+              >
+                {type}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       {/* Jobs List */}
       <ScrollView
@@ -224,8 +225,8 @@ const JobsScreen = () => {
               <TouchableOpacity style={styles.jobCard}>
                 <View style={styles.jobHeader}>
                   <Image
-                    //source={{ uri: job.employer.logo }}
-                    source={require("../../assets/images/logo.png")}
+                    source={{ uri: job.employer.logo }}
+                    defaultSource={require("../../assets/images/logo.png")}
                     style={styles.companyLogo}
                     resizeMode="cover"
                   />
@@ -333,18 +334,18 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   filterContainer: {
+    height: 56,
     borderBottomColor: "#eee",
     borderBottomWidth: 1,
   },
   jobTypesContainer: {
     paddingVertical: 12,
     paddingHorizontal: 16,
-    marginBottom: 8,
+    alignItems: "center",
   },
   jobType: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    height: 32,
     backgroundColor: "#f0f0f0ff",
     borderRadius: 16,
     marginRight: 8,
