@@ -11,11 +11,13 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { Badge, Snackbar } from "react-native-paper";
 
 // Calculate card width based on screen width
@@ -102,6 +104,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <View style={{ flex: 0.4, position: "relative", top: "0.7%" }}>
