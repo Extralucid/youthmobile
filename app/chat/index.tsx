@@ -1,49 +1,62 @@
 // app/(tabs)/chats/index.tsx
-import { Ionicons } from '@expo/vector-icons';
-import { Link, router } from 'expo-router';
-import React, { useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { ChatRoom } from '../types/chats';
+import Fonts from "@/constants/Fonts";
+import { Ionicons } from "@expo/vector-icons";
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ChatRoom } from "../types/chats";
 
 const ChatRoomsScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   // Dummy data for chat rooms
-  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([
+  const [chatRooms] = useState<ChatRoom[]>([
     {
-      id: '1',
-      name: 'John Doe',
-      lastMessage: 'Hey, how are you doing?',
-      time: '10:30 AM',
+      id: "1",
+      name: "John Doe",
+      lastMessage: "Hey, how are you doing?",
+      time: "10:30 AM",
       unreadCount: 2,
       isGroup: false,
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
-      id: '2',
-      name: 'Tech Team',
-      lastMessage: 'Alice: The meeting is at 3pm',
-      time: 'Yesterday',
+      id: "2",
+      name: "Tech Team",
+      lastMessage: "Alice: The meeting is at 3pm",
+      time: "Yesterday",
       unreadCount: 5,
       isGroup: true,
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg'
+      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
     },
     {
-      id: '3',
-      name: 'Sarah Smith',
-      lastMessage: 'Thanks for the help!',
-      time: 'Monday',
+      id: "3",
+      name: "Sarah Smith",
+      lastMessage: "Thanks for the help!",
+      time: "Monday",
       unreadCount: 0,
       isGroup: false,
-      avatar: 'https://randomuser.me/api/portraits/women/3.jpg'
-    }
+      avatar: "https://randomuser.me/api/portraits/women/3.jpg",
+    },
   ]);
 
   const renderItem = ({ item }: { item: ChatRoom }) => (
-    <Link href={{
-      pathname: `/chat/conversation`,
-      params: { id: item.id, other: "anything you want here" },
-    }} asChild>
+    <Link
+      href={{
+        pathname: `/chat/conversation`,
+        params: { id: item.id, name: item.name },
+      }}
+      asChild
+    >
       <TouchableOpacity style={styles.chatItem}>
         <Image source={{ uri: item.avatar }} style={styles.avatar} />
         <View style={styles.chatContent}>
@@ -65,13 +78,13 @@ const ChatRoomsScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         {showSearch ? (
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search checks..."
+              placeholder="Rechercher..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus={true}
@@ -80,7 +93,7 @@ const ChatRoomsScreen = () => {
               style={styles.closeSearch}
               onPress={() => {
                 setShowSearch(false);
-                setSearchQuery('');
+                setSearchQuery("");
               }}
             >
               <Ionicons name="close" size={24} color="#666" />
@@ -88,18 +101,18 @@ const ChatRoomsScreen = () => {
           </View>
         ) : (
           <>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
-            <Text style={styles.title}>Liste de discussions</Text>
-            <View style={styles.headerIcons}>
+            <Text style={styles.headerTitle}>Discussions</Text>
+            <View style={styles.headerActions}>
               <TouchableOpacity
-                style={styles.iconButton}
+                style={styles.headerAction}
                 onPress={() => setShowSearch(true)}
               >
                 <Ionicons name="search" size={24} color="#333" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity style={styles.headerAction}>
                 <Ionicons name="add-circle" size={24} color="#333" />
               </TouchableOpacity>
             </View>
@@ -111,72 +124,61 @@ const ChatRoomsScreen = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#ffffff",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    paddingTop: 30,
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#ffffff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#f0f0f0",
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
   },
-  backText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#333',
+  headerActions: {
+    flexDirection: "row",
+    gap: 12,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  headerIcons: {
-    flexDirection: 'row',
-  },
-  iconButton: {
-    marginLeft: 16,
-  },
-  searchIcon: {
-    marginRight: 8,
+  headerAction: {
+    padding: 4,
   },
   searchContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 40,
   },
   searchInput: {
     flex: 1,
-    height: '100%',
+    height: "100%",
+    fontFamily: Fonts.type.primary,
     paddingVertical: 0,
   },
   closeSearch: {
     marginLeft: 8,
   },
   chatItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 15,
-    alignItems: 'center',
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   avatar: {
     width: 50,
@@ -188,32 +190,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 5,
   },
   chatName: {
-    fontWeight: 'bold',
+    fontFamily: Fonts.type.semi,
     fontSize: 16,
   },
   chatTime: {
-    color: '#999',
+    fontFamily: Fonts.type.primary,
+    color: "#999",
     fontSize: 12,
   },
   chatMessage: {
-    color: '#666',
+    fontFamily: Fonts.type.primary,
+    color: "#666",
   },
   unreadBadge: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#06803A",
     width: 22,
     height: 22,
     borderRadius: 11,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 10,
   },
   unreadText: {
-    color: '#fff',
+    color: "#fff",
+    fontFamily: Fonts.type.semi,
     fontSize: 12,
   },
 });

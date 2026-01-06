@@ -1,38 +1,90 @@
 // app/chats/[id].tsx
-import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { io, Socket } from 'socket.io-client';
-import { Message } from '../types/chats';
+import Fonts from "@/constants/Fonts";
+import { Ionicons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { io, Socket } from "socket.io-client";
+import { Message } from "../types/chats";
 
 const ChatScreen = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const socketRef = useRef<Socket | null>(null);
   const flatListRef = useRef<FlatList>(null);
 
+  // Default names for chat rooms
+  const chatNames: Record<string, string> = {
+    "1": "John Doe",
+    "2": "Tech Team",
+    "3": "Sarah Smith",
+  };
+
+  const chatName = name || chatNames[id] || "Discussion";
+
   // Dummy data for messages
   const dummyMessages: Record<string, Message[]> = {
-    '1': [
-      { id: '1', text: 'Hey there!', time: '10:00 AM', sender: 'other' },
-      { id: '2', text: 'Hi! How are you?', time: '10:02 AM', sender: 'me' },
-      { id: '3', text: 'I\'m good, thanks for asking!', time: '10:05 AM', sender: 'other' },
+    "1": [
+      { id: "1", text: "Hey there!", time: "10:00 AM", sender: "other" },
+      { id: "2", text: "Hi! How are you?", time: "10:02 AM", sender: "me" },
+      {
+        id: "3",
+        text: "I'm good, thanks for asking!",
+        time: "10:05 AM",
+        sender: "other",
+      },
     ],
-    '2': [
-      { id: '1', text: 'Welcome everyone to the group!', time: '9:00 AM', sender: 'other', senderName: 'Alice' },
-      { id: '2', text: 'Thanks for creating this group', time: '9:05 AM', sender: 'me' },
-      { id: '3', text: 'When is our next meeting?', time: '9:10 AM', sender: 'other', senderName: 'Bob' },
+    "2": [
+      {
+        id: "1",
+        text: "Welcome everyone to the group!",
+        time: "9:00 AM",
+        sender: "other",
+        senderName: "Alice",
+      },
+      {
+        id: "2",
+        text: "Thanks for creating this group",
+        time: "9:05 AM",
+        sender: "me",
+      },
+      {
+        id: "3",
+        text: "When is our next meeting?",
+        time: "9:10 AM",
+        sender: "other",
+        senderName: "Bob",
+      },
     ],
-    '3': [
-      { id: '1', text: 'Hi Sarah!', time: '2:00 PM', sender: 'me' },
-      { id: '2', text: 'Hello! Can you help me with something?', time: '2:05 PM', sender: 'other' },
-      { id: '3', text: 'Sure, what do you need?', time: '2:06 PM', sender: 'me' },
-    ]
+    "3": [
+      { id: "1", text: "Hi Sarah!", time: "2:00 PM", sender: "me" },
+      {
+        id: "2",
+        text: "Hello! Can you help me with something?",
+        time: "2:05 PM",
+        sender: "other",
+      },
+      {
+        id: "3",
+        text: "Sure, what do you need?",
+        time: "2:06 PM",
+        sender: "me",
+      },
+    ],
   };
 
   useEffect(() => {
@@ -42,14 +94,14 @@ const ChatScreen = () => {
     }
 
     // Connect to Socket.io server
-    socketRef.current = io('http://your-socket-server-url', {
-      transports: ['websocket'],
-      query: { chatId: id }
+    socketRef.current = io("http://your-socket-server-url", {
+      transports: ["websocket"],
+      query: { chatId: id },
     });
 
     // Listen for new messages
-    socketRef.current.on('newMessage', (newMessage: Message) => {
-      setMessages(prev => [...prev, newMessage]);
+    socketRef.current.on("newMessage", (newMessage: Message) => {
+      setMessages((prev) => [...prev, newMessage]);
       scrollToBottom();
     });
 
@@ -67,42 +119,55 @@ const ChatScreen = () => {
   };
 
   const handleSend = () => {
-    if (message.trim() === '' || !id) return;
+    if (message.trim() === "" || !id) return;
 
     const newMessage: Message = {
       id: Date.now().toString(),
       text: message,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      sender: 'me'
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      sender: "me",
     };
 
     // In a real app, you would emit this to the server
     if (socketRef.current) {
-      socketRef.current.emit('sendMessage', {
+      socketRef.current.emit("sendMessage", {
         chatId: id,
-        message: newMessage
+        message: newMessage,
       });
     }
 
     // For demo purposes, add to local state
-    setMessages(prev => [...prev, newMessage]);
-    setMessage('');
+    setMessages((prev) => [...prev, newMessage]);
+    setMessage("");
     scrollToBottom();
   };
 
   const renderItem = ({ item }: { item: Message }) => (
-    <View style={[
-      styles.messageContainer,
-      item.sender === 'me' ? styles.myMessage : styles.otherMessage
-    ]}>
-      {item.sender !== 'me' && item.senderName && (
+    <View
+      style={[
+        styles.messageContainer,
+        item.sender === "me" ? styles.myMessage : styles.otherMessage,
+      ]}
+    >
+      {item.sender !== "me" && item.senderName && (
         <Text style={styles.senderName}>{item.senderName}</Text>
       )}
-      <View style={[
-        styles.messageBubble,
-        item.sender === 'me' ? styles.myBubble : styles.otherBubble
-      ]}>
-        <Text style={item.sender === 'me' ? styles.myMessageText : styles.otherMessageText}>
+      <View
+        style={[
+          styles.messageBubble,
+          item.sender === "me" ? styles.myBubble : styles.otherBubble,
+        ]}
+      >
+        <Text
+          style={
+            item.sender === "me"
+              ? styles.myMessageText
+              : styles.otherMessageText
+          }
+        >
           {item.text}
         </Text>
       </View>
@@ -111,17 +176,13 @@ const ChatScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-      keyboardVerticalOffset={90}
-    >
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         {showSearch ? (
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search checks..."
+              placeholder="Rechercher..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus={true}
@@ -130,7 +191,7 @@ const ChatScreen = () => {
               style={styles.closeSearch}
               onPress={() => {
                 setShowSearch(false);
-                setSearchQuery('');
+                setSearchQuery("");
               }}
             >
               <Ionicons name="close" size={24} color="#666" />
@@ -138,13 +199,13 @@ const ChatScreen = () => {
           </View>
         ) : (
           <>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
-            <Text style={styles.title}>Discussion en cours</Text>
-            <View style={styles.headerIcons}>
+            <Text style={styles.headerTitle}>{chatName}</Text>
+            <View style={styles.headerActions}>
               <TouchableOpacity
-                style={styles.iconButton}
+                style={styles.headerAction}
                 onPress={() => setShowSearch(true)}
               >
                 <Ionicons name="search" size={24} color="#333" />
@@ -153,82 +214,81 @@ const ChatScreen = () => {
           </>
         )}
       </View>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.messagesList}
-        onContentSizeChange={scrollToBottom}
-        onLayout={scrollToBottom}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={message}
-          onChangeText={setMessage}
-          placeholder="Type a message..."
-          multiline
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
+        keyboardVerticalOffset={0}
+      >
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.messagesList}
+          onContentSizeChange={scrollToBottom}
+          onLayout={scrollToBottom}
         />
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-          <Text style={styles.sendText}>Send</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={message}
+            onChangeText={setMessage}
+            placeholder="Type a message..."
+            multiline
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+            <Text style={styles.sendText}>Envoyer</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    paddingTop: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#ffffff",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    paddingTop: 30,
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#ffffff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#f0f0f0",
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
   },
-  backText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#333',
+  headerActions: {
+    flexDirection: "row",
+    gap: 12,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+  headerAction: {
+    padding: 4,
   },
-  headerIcons: {
-    flexDirection: 'row',
-  },
-  iconButton: {
-    marginLeft: 16,
-  },
-  searchIcon: {
-    marginRight: 8,
+  keyboardView: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
   },
   searchContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 40,
   },
   searchInput: {
     flex: 1,
-    height: '100%',
+    height: "100%",
+    fontFamily: Fonts.type.primary,
     paddingVertical: 0,
   },
   closeSearch: {
@@ -238,76 +298,82 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   otherMessage: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   messageContainer: {
     marginBottom: 15,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   myMessage: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   senderName: {
     fontSize: 12,
-    color: '#666',
+    fontFamily: Fonts.type.primary,
+    color: "#666",
     marginBottom: 4,
   },
   messageBubble: {
     padding: 12,
     borderRadius: 18,
-    maxWidth: '80%',
+    maxWidth: "80%",
   },
   myBubble: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#06803A",
     borderBottomRightRadius: 4,
   },
   otherBubble: {
-    backgroundColor: '#e5e5ea',
+    backgroundColor: "#e5e5ea",
     borderBottomLeftRadius: 4,
   },
   messageText: {
     fontSize: 16,
+    fontFamily: Fonts.type.primary,
   },
   myMessageText: {
-    color: '#fff',
+    fontFamily: Fonts.type.primary,
+    color: "#fff",
   },
   otherMessageText: {
-    color: '#000',
+    fontFamily: Fonts.type.primary,
+    color: "#000",
   },
   messageTime: {
     fontSize: 11,
-    color: '#999',
+    fontFamily: Fonts.type.primary,
+    color: "#999",
     marginTop: 4,
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
     paddingBottom: 40,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopWidth: 1,
-    borderTopColor: '#eee',
+    borderTopColor: "#eee",
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
+    fontFamily: Fonts.type.primary,
     maxHeight: 100,
     marginRight: 10,
   },
   sendButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#007AFF',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#06803A",
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   sendText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontFamily: Fonts.type.semi,
   },
 });
 
