@@ -1,228 +1,300 @@
-import ImageSlider from '@/components/slider/ImageSlider';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import React from 'react';
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Fonts from "@/constants/Fonts";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React from "react";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+const { width: screenWidth } = Dimensions.get("window");
 
-const { width: screenWidth } = Dimensions.get('window');
+type ServiceItem = {
+  id: number;
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  description: string;
+  href: string;
+  color: string;
+};
+
 const ServicesScreen = () => {
+  const cardData: ServiceItem[] = [
+    {
+      id: 1,
+      icon: "briefcase-outline",
+      label: "Offres d'emploi",
+      description: "Découvrez les opportunités",
+      href: "/job",
+      color: "#06803A",
+    },
+    {
+      id: 2,
+      icon: "document-text-outline",
+      label: "Blogs",
+      description: "Articles et actualités",
+      href: "/blog",
+      color: "#2196F3",
+    },
+    {
+      id: 3,
+      icon: "school-outline",
+      label: "Tutoriels",
+      description: "Apprenez de nouvelles compétences",
+      href: "/tutorials",
+      color: "#FF9800",
+    },
+    {
+      id: 4,
+      icon: "mic-outline",
+      label: "Podcasts",
+      description: "Écoutez et inspirez-vous",
+      href: "/podcast",
+      color: "#9C27B0",
+    },
+    {
+      id: 5,
+      icon: "chatbubbles-outline",
+      label: "Chat",
+      description: "Discutez en temps réel",
+      href: "/chat",
+      color: "#4CAF50",
+    },
+    {
+      id: 6,
+      icon: "library-outline",
+      label: "Livres",
+      description: "Bibliothèque numérique",
+      href: "/books",
+      color: "#F44336",
+    },
+    {
+      id: 7,
+      icon: "people-outline",
+      label: "Forums",
+      description: "Échangez avec la communauté",
+      href: "/forum",
+      color: "#00BCD4",
+    },
+    {
+      id: 8,
+      icon: "business-outline",
+      label: "Entreprises",
+      description: "Annuaire des sociétés",
+      href: "/settings/entreprises",
+      color: "#607D8B",
+    },
+    {
+      id: 9,
+      icon: "book-outline",
+      label: "Universités",
+      description: "Instituts et formations",
+      href: "/settings/universites",
+      color: "#795548",
+    },
+  ];
 
-    const cardData = [
-        {
-            id: 1,
-            icon: '🏷️', // Offers - gift box
-            label: 'Offres',
-            href: '/job',
-        },
-        {
-            id: 2,
-            icon: '📝', // Blogs - memo/notepad
-            label: 'Blogs',
-            href: '/blog',
-        },
-        {
-            id: 3,
-            icon: '🎓', // Tutorials - graduation cap
-            label: 'Tutoriels',
-            href: '/tutorials',
-        },
-        {
-            id: 4,
-            icon: '🎙️', // Podcasts - microphone
-            label: 'Podcasts',
-            href: '/podcast',
-        },
-        {
-            id: 5,
-            icon: '💬', // Chat - speech bubble
-            label: 'Chat',
-            href: '/chat',
-        },
-        {
-            id: 6,
-            icon: '📚', // Books - stack of books
-            label: 'Livres',
-            href: '/books',
-        },
-        {
-            id: 7,
-            icon: '🗣️', // Forums - speaking head
-            label: 'Forums',
-            href: '/forum',
-        },
-        {
-            id: 8,
-            icon: '💼', // Enterprises - office building
-            label: 'Sociétés',
-            href: '/settings/entreprises',
-        },
-        {
-            id: 9,
-            icon: '🏛️', // Universities - classical building
-            label: 'Instituts',
-            href: '/settings/universites',
-        },
-    ];
+  return (
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.backText}>Services</Text>
+        <TouchableOpacity style={styles.headerButton}>
+          <Ionicons name="ellipsis-vertical" size={20} color="#333" />
+        </TouchableOpacity>
+      </View>
 
-
-    return (
-        <SafeAreaView style={styles.safeArea}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                    <Ionicons name="arrow-back" size={24} color="#333" />
-                    <Text style={styles.backText}>Retour</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.headerButton}>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#333" />
-                </TouchableOpacity>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Header Section */}
+        <View style={styles.heroSection}>
+          <View style={styles.heroContent}>
+            <Text style={styles.heroTitle}>Explorez nos services</Text>
+            <Text style={styles.heroSubtitle}>
+              Toutes les ressources dont vous avez besoin pour réussir
+            </Text>
+          </View>
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>9</Text>
+              <Text style={styles.statLabel}>Services</Text>
             </View>
-
-            <ScrollView style={styles.container}>
-                <View style={styles.carouselContainer}>
-                    <ImageSlider />
-                </View>
-
-
-                {/* Cards Grid Section */}
-                <View style={styles.gridContainer}>
-                    <Text style={styles.gridTitle}>Ressources et Opportunités</Text>
-                    <View style={styles.grid}>
-                        {cardData.map((item) => (
-                            <TouchableOpacity key={item.id} style={styles.card}
-                                onPress={() => { router.navigate(item.href) }}>
-                                <Text style={styles.cardIcon}>{item.icon}</Text>
-                                <Text style={styles.cardLabel}>{item.label}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </View>
-            </ScrollView>
-
-            {/* Footer Buttons */}
-            <View style={styles.footer}>
-
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>24/7</Text>
+              <Text style={styles.statLabel}>Disponible</Text>
             </View>
-        </SafeAreaView>
-    );
+          </View>
+        </View>
+
+        <View style={styles.cardsContainer}>
+          {cardData.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              onPress={() => {
+                router.navigate(item.href as any);
+              }}
+              activeOpacity={0.7}
+            >
+              <View
+                style={[
+                  styles.iconContainer,
+                  { backgroundColor: item.color + "15" },
+                ]}
+              >
+                <Ionicons name={item.icon} size={32} color={item.color} />
+              </View>
+              <View style={styles.cardContent}>
+                <Text style={styles.cardLabel}>{item.label}</Text>
+                <Text style={styles.cardDescription}>{item.description}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#999" />
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    container: {
-        flex: 1,
-        paddingHorizontal: 5,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 16,
-        paddingTop: 40,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-        backgroundColor: 'white',
-    },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    backText: {
-        marginLeft: 8,
-        fontSize: 16,
-        color: '#333',
-    },
-    headerButton: {
-        padding: 4,
-    },
-    carouselContainer: {
-        margin: 15,
-    },
-    carouselItem: {
-        width: '100%',
-        borderRadius: 10,
-        overflow: 'hidden',
-    },
-    carouselImage: {
-        width: '100%',
-        height: 180,
-    },
-    carouselTextContainer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        padding: 15,
-    },
-    carouselTitle: {
-        color: 'white',
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    carouselSubtitle: {
-        color: 'white',
-        fontSize: 16,
-    },
-    gridContainer: {
-        backgroundColor: 'white',
-        padding: 15,
-        paddingBottom: 100,
-        margin: 15,
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    gridTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        color: '#333',
-    },
-    grid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-    },
-    card: {
-        width: (screenWidth - 60) / 3.9, // Adjusted for horizontal gap
-        aspectRatio: 1,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 15,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#eee',
-    },
-    cardIcon: {
-        fontSize: 25,
-        marginBottom: 5,
-    },
-    cardLabel: {
-        fontSize: 13,
-        fontWeight: '500',
-        textAlign: 'center',
-        color: '#555',
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 16,
-        paddingBottom: 45,
-        backgroundColor: 'white',
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
-    },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#f9f9f9",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backText: {
+    fontSize: 20,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    flex: 1,
+    textAlign: "center",
+    marginRight: 24,
+  },
+  headerButton: {
+    padding: 4,
+  },
+  heroSection: {
+    backgroundColor: "#06803A",
+    margin: 16,
+    marginTop: 8,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: "#06803A",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  heroContent: {
+    marginBottom: 20,
+  },
+  heroTitle: {
+    fontSize: 28,
+    fontFamily: Fonts.type.bold,
+    color: "white",
+    marginBottom: 8,
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "rgba(255,255,255,0.9)",
+    lineHeight: 20,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 12,
+    padding: 16,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  statNumber: {
+    fontSize: 24,
+    fontFamily: Fonts.type.bold,
+    color: "white",
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontFamily: Fonts.type.primary,
+    color: "rgba(255,255,255,0.85)",
+  },
+  statDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: "rgba(255,255,255,0.3)",
+  },
+  cardsContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 100,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  iconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  cardLabel: {
+    fontSize: 16,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 4,
+  },
+  cardDescription: {
+    fontSize: 13,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+  },
 });
 
 export default ServicesScreen;

@@ -1,23 +1,19 @@
+import Fonts from "@/constants/Fonts";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Link, router, useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
 import {
-    AntDesign,
-    Feather,
-    FontAwesome,
-    Ionicons,
-    MaterialIcons
-} from '@expo/vector-icons';
-import { Link, useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
-import {
-    Image,
-    Linking,
-    ScrollView,
-    Share,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from 'react-native';
+  Image,
+  Linking,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Review = {
   id: string;
@@ -60,48 +56,69 @@ const BookDetailScreen = () => {
   const { id } = useLocalSearchParams();
   const [inWishlist, setInWishlist] = useState(false);
   const [inCart, setInCart] = useState(false);
-  const [newReview, setNewReview] = useState('');
+  const [newReview, setNewReview] = useState("");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [quantity, setQuantity] = useState(1);
 
   // Sample book data
   const book: BookDetail = {
-    id: '1',
-    title: 'The Silent Patient',
-    author: 'Alex Michaelides',
-    coverImage: 'https://m.media-amazon.com/images/I/51B7kuFwQFL._SY425_.jpg',
+    id: "1",
+    title: "The Silent Patient",
+    author: "Alex Michaelides",
+    coverImage: "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
     price: 12.99,
     rating: 4.5,
-    category: 'Thriller',
-    description: 'Alicia Berenson was thirty-three years old when she killed her husband...',
+    category: "Thriller",
+    description:
+      "Alicia Berenson was thirty-three years old when she killed her husband...",
     pages: 336,
-    publisher: 'Celadon Books',
-    publishedDate: 'February 5, 2019',
-    isbn: '9781250301697',
-    language: 'English',
+    publisher: "Celadon Books",
+    publishedDate: "February 5, 2019",
+    isbn: "9781250301697",
+    language: "English",
     reviews: [
       {
-        id: '1',
-        user: 'BookLover42',
-        avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+        id: "1",
+        user: "BookLover42",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
         rating: 5,
-        date: '2 weeks ago',
-        comment: 'Absolutely mind-blowing twist at the end! Could not put it down.',
-        likes: 24
+        date: "2 weeks ago",
+        comment:
+          "Absolutely mind-blowing twist at the end! Could not put it down.",
+        likes: 24,
       },
       // More reviews...
     ],
     relatedBooks: [
       {
-        id: '2',
-        title: 'The Maidens',
-        author: 'Alex Michaelides',
-        coverImage: 'https://m.media-amazon.com/images/I/51B7kuFwQFL._SY425_.jpg',
+        id: "2",
+        title: "The Maidens",
+        author: "Alex Michaelides",
+        coverImage:
+          "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
         price: 14.99,
-        rating: 4.2
+        rating: 4.2,
+      },
+      {
+        id: "3",
+        title: "The Woman in the Window",
+        author: "A.J. Finn",
+        coverImage:
+          "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+        price: 13.99,
+        rating: 4.1,
+      },
+      {
+        id: "4",
+        title: "Gone Girl",
+        author: "Gillian Flynn",
+        coverImage:
+          "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+        price: 12.99,
+        rating: 4.5,
       },
       // More related books...
-    ]
+    ],
   };
 
   // Handler functions
@@ -110,462 +127,519 @@ const BookDetailScreen = () => {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out "${book.title}" by ${book.author} - ${book.description.substring(0, 100)}...`,
-        title: book.title
+        message: `Check out "${book.title}" by ${
+          book.author
+        } - ${book.description.substring(0, 100)}...`,
+        title: book.title,
       });
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
   const handlePreview = () => {
-    Linking.openURL(`https://books.google.com/books?id=${book.isbn}&pg=PP1&dq=${book.isbn}&hl=&cd=1&source=gbs_api`);
+    Linking.openURL(
+      `https://books.google.com/books?id=${book.isbn}&pg=PP1&dq=${book.isbn}&hl=&cd=1&source=gbs_api`
+    );
   };
-  const handlePurchase = () => Linking.openURL('https://example.com/checkout');
+  const handlePurchase = () => Linking.openURL("https://example.com/checkout");
 
   const handleAddReview = () => {
     if (newReview.trim()) {
       const review: Review = {
         id: Date.now().toString(),
-        user: 'CurrentUser',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+        user: "CurrentUser",
+        avatar: "https://randomuser.me/api/portraits/women/1.jpg",
         rating: 5,
-        date: 'Just now',
+        date: "Just now",
         comment: newReview,
-        likes: 0
+        likes: 0,
       };
       setReviews([...reviews, review]);
-      setNewReview('');
+      setNewReview("");
     }
   };
 
   const handleLikeReview = (reviewId: string) => {
-    setReviews(reviews.map(review => 
-      review.id === reviewId 
-        ? { ...review, likes: review.likes + 1 } 
-        : review
-    ));
+    setReviews(
+      reviews.map((review) =>
+        review.id === reviewId ? { ...review, likes: review.likes + 1 } : review
+      )
+    );
   };
 
-  const increaseQuantity = () => setQuantity(prev => prev + 1);
-  const decreaseQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
-
-
-
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Book Cover and Basic Info */}
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      {/* Header */}
       <View style={styles.header}>
-        <Image 
-          source={{ uri: book.coverImage }} 
-          style={styles.coverImage}
-          resizeMode="contain"
-        />
-        
-        <View style={styles.headerInfo}>
-          <Text style={styles.title}>{book.title}</Text>
-          <Text style={styles.author}>by {book.author}</Text>
-          
-          <View style={styles.ratingContainer}>
-            <AntDesign name="star" size={20} color="#FFD700" />
-            <Text style={styles.ratingText}>{book.rating}</Text>
-            <Text style={styles.category}>{book.category}</Text>
-          </View>
-          
-          <Text style={styles.price}>${book.price.toFixed(2)}</Text>
-        </View>
-      </View>
-
-      {/* Action Buttons */}
-      <View style={styles.actionButtons}>
-        <TouchableOpacity 
-          style={[styles.actionButton, inWishlist && styles.inWishlist]}
-          onPress={handleAddToWishlist}
-        >
-          <MaterialIcons 
-            name={inWishlist ? "favorite" : "favorite-border"} 
-            size={24} 
-            color={inWishlist ? "#ff4444" : "#333"} 
-          />
-          <Text style={styles.actionButtonText}>
-            {inWishlist ? 'Favoris' : 'Souhait'}
-          </Text>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.actionButton, inCart && styles.inCart]}
-          onPress={handleAddToCart}
-        >
-          <Feather 
-            name={inCart ? "shopping-bag" : "shopping-cart"} 
-            size={24} 
-            color={inCart ? "#4CAF50" : "#333"} 
-          />
-          <Text style={styles.actionButtonText}>
-            {inCart ? 'Au panier' : 'Ajouter'}
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.actionButton}
-          onPress={handleShare}
-        >
-          <Feather name="share-2" size={24} color="#333" />
-          <Text style={styles.actionButtonText}>Partager</Text>
-        </TouchableOpacity>
-      </View>
-
-       {/* Purchase Options */}
-      <View style={styles.purchaseSection}>
-        <Text style={styles.sectionTitle}> Options d'achat</Text>
-        <View style={styles.quantitySelector}>
-          <TouchableOpacity onPress={decreaseQuantity} style={styles.quantityButton}>
-            <MaterialIcons name="remove" size={20} color="#333" />
+        <Text style={styles.headerTitle}>Détails du Livre</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={handleShare} style={styles.headerIcon}>
+            <Ionicons name="share-outline" size={22} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity onPress={increaseQuantity} style={styles.quantityButton}>
-            <MaterialIcons name="add" size={20} color="#333" />
+          <TouchableOpacity
+            onPress={handleAddToWishlist}
+            style={styles.headerIcon}
+          >
+            <Ionicons
+              name={inWishlist ? "heart" : "heart-outline"}
+              size={22}
+              color={inWishlist ? "#ff4444" : "#333"}
+            />
           </TouchableOpacity>
         </View>
-        <Text style={styles.totalPrice}>
-          Total: ${(book.price * quantity).toFixed(2)}
-        </Text>
-        <TouchableOpacity style={styles.buyButton} onPress={handlePurchase}>
-          <Text style={styles.buyButtonText}>Payer Maintenant</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cartButton} onPress={handleAddToCart}>
-          <Text style={styles.cartButtonText}>
-            {inCart ? 'Au panier' : 'Ajouter au panier'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Book Details */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.description}>{book.description}</Text>
-      </View>
-
-      <View style={styles.detailsGrid}>
-        <View style={styles.detailItem}>
-          <FontAwesome name="book" size={20} color="#666" />
-          <Text style={styles.detailLabel}>Pages</Text>
-          <Text style={styles.detailValue}>{book.pages}</Text>
-        </View>
-        
-        <View style={styles.detailItem}>
-          <MaterialIcons name="language" size={20} color="#666" />
-          <Text style={styles.detailLabel}>Langues</Text>
-          <Text style={styles.detailValue}>{book.language}</Text>
-        </View>
-        
-        <View style={styles.detailItem}>
-          <Feather name="calendar" size={20} color="#666" />
-          <Text style={styles.detailLabel}>Publié</Text>
-          <Text style={styles.detailValue}>{book.publishedDate}</Text>
-        </View>
-        
-        <View style={styles.detailItem}>
-          <MaterialIcons name="library-books" size={20} color="#666" />
-          <Text style={styles.detailLabel}>Publisher</Text>
-          <Text style={styles.detailValue}>{book.publisher}</Text>
-        </View>
-        
-        <View style={styles.detailItem}>
-          <MaterialIcons name="featured-play-list" size={20} color="#666" />
-          <Text style={styles.detailLabel}>ISBN</Text>
-          <Text style={styles.detailValue}>{book.isbn}</Text>
-        </View>
-      </View>
-
-      {/* Preview Button */}
-      <TouchableOpacity style={styles.previewButton} onPress={handlePreview}>
-        <Ionicons name="book-outline" size={24} color="#06803A" />
-        <Text style={styles.previewButtonText}>Lire ce Livre</Text>
-      </TouchableOpacity>
-
-
-      {/* Reviews Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Commentaires des clients</Text>
-        {[...book.reviews, ...reviews].map(review => (
-          <View key={review.id} style={styles.reviewContainer}>
-            <Image source={{ uri: review.avatar }} style={styles.reviewAvatar} />
-            <View style={styles.reviewContent}>
-              <View style={styles.reviewHeader}>
-                <Text style={styles.reviewUser}>{review.user}</Text>
-                <View style={styles.reviewRating}>
-                  {[...Array(5)].map((_, i) => (
-                    <MaterialIcons 
-                      key={i} 
-                      name={i < review.rating ? "star" : "star-border"} 
-                      size={16} 
-                      color="#FFD700" 
-                    />
-                  ))}
-                </View>
-              </View>
-              <Text style={styles.reviewDate}>{review.date}</Text>
-              <Text style={styles.reviewText}>{review.comment}</Text>
-              <TouchableOpacity 
-                style={styles.likeButton}
-                onPress={() => handleLikeReview(review.id)}
-              >
-                <AntDesign name="like2" size={16} color="#666" />
-                <Text style={styles.likeCount}>{review.likes}</Text>
-              </TouchableOpacity>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Hero Section */}
+        <View style={styles.heroSection}>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+            }}
+            style={styles.heroCover}
+            resizeMode="cover"
+          />
+          <View style={styles.heroOverlay}>
+            <View style={styles.ratingBadge}>
+              <Ionicons name="star" size={16} color="#FFD700" />
+              <Text style={styles.ratingBadgeText}>{book.rating}</Text>
             </View>
           </View>
-        ))}
+        </View>
 
-        {/* Add Review */}
-        <View style={styles.addReviewContainer}>
-          <Text style={styles.addReviewTitle}>Écrire un avis</Text>
-          <TextInput
-            style={styles.reviewInput}
-            placeholder="Partagez vos pensées sur ce livre..."
-            placeholderTextColor="#999"
-            value={newReview}
-            onChangeText={setNewReview}
-            multiline
-          />
-          <TouchableOpacity 
-            style={styles.submitReviewButton}
-            onPress={handleAddReview}
-            disabled={!newReview.trim()}
+        {/* Book Info Card */}
+        <View style={styles.infoCard}>
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryBadgeText}>{book.category}</Text>
+          </View>
+          <Text style={styles.bookTitle}>{book.title}</Text>
+          <Text style={styles.bookAuthor}>par {book.author}</Text>
+          <View style={styles.priceSection}>
+            <Text style={styles.price}>${book.price.toFixed(2)}</Text>
+            <View style={styles.detailsChips}>
+              <View style={styles.chip}>
+                <Ionicons name="document-text" size={14} color="#666" />
+                <Text style={styles.chipText}>{book.pages} pages</Text>
+              </View>
+              <View style={styles.chip}>
+                <Ionicons name="language" size={14} color="#666" />
+                <Text style={styles.chipText}>{book.language}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.actionButtonsSection}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={handlePurchase}
           >
-            <Text style={styles.submitReviewText}>Soumettre un commentaire</Text>
+            <Ionicons name="cart" size={20} color="#fff" />
+            <Text style={styles.primaryButtonText}>Acheter Maintenant</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={handlePreview}
+          >
+            <Ionicons name="book-outline" size={20} color="#06803A" />
+            <Text style={styles.secondaryButtonText}>Lire un extrait</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Related Books */}
-      {book.relatedBooks.length > 0 && (
+        {/* Description */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Vous aimerez peut-être aussi</Text>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.relatedBooksContainer}
-          >
-            {book.relatedBooks.map(book => (
-              <Link href={`/bookstore/${book.id}`} key={book.id} asChild>
-                <TouchableOpacity style={styles.relatedBookCard}>
-                  <Image 
-                    source={{ uri: book.coverImage }} 
-                    style={styles.relatedBookCover}
-                  />
-                  <Text style={styles.relatedBookTitle} numberOfLines={1}>{book.title}</Text>
-                  <Text style={styles.relatedBookAuthor}>{book.author}</Text>
-                  <View style={styles.relatedBookFooter}>
-                    <Text style={styles.relatedBookPrice}>${book.price.toFixed(2)}</Text>
-                    <View style={styles.relatedBookRating}>
-                      <MaterialIcons name="star" size={14} color="#FFD700" />
-                      <Text style={styles.relatedBookRatingText}>{book.rating}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </Link>
-            ))}
-          </ScrollView>
+          <Text style={styles.sectionTitle}>Description</Text>
+          <Text style={styles.description}>{book.description}</Text>
         </View>
-      )}
-    </ScrollView>
+
+        {/* Book Details */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Informations</Text>
+          <View style={styles.infoGrid}>
+            <View style={styles.infoItem}>
+              <View style={styles.infoIcon}>
+                <Ionicons name="business" size={20} color="#06803A" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Éditeur</Text>
+                <Text style={styles.infoValue}>{book.publisher}</Text>
+              </View>
+            </View>
+            <View style={styles.infoItem}>
+              <View style={styles.infoIcon}>
+                <Ionicons name="calendar" size={20} color="#06803A" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Date de publication</Text>
+                <Text style={styles.infoValue}>{book.publishedDate}</Text>
+              </View>
+            </View>
+            <View style={styles.infoItem}>
+              <View style={styles.infoIcon}>
+                <Ionicons name="barcode" size={20} color="#06803A" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>ISBN</Text>
+                <Text style={styles.infoValue}>{book.isbn}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Reviews Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Avis</Text>
+            <View style={styles.reviewStats}>
+              <Ionicons name="star" size={16} color="#FFD700" />
+              <Text style={styles.reviewStatsText}>
+                {book.rating} ({book.reviews.length} avis)
+              </Text>
+            </View>
+          </View>
+
+          {[...book.reviews, ...reviews].slice(0, 3).map((review) => (
+            <View key={review.id} style={styles.reviewContainer}>
+              <Image
+                source={{ uri: review.avatar }}
+                style={styles.reviewAvatar}
+                resizeMode="cover"
+              />
+              <View style={styles.reviewContent}>
+                <View style={styles.reviewHeader}>
+                  <Text style={styles.reviewUser}>{review.user}</Text>
+                  <View style={styles.reviewRating}>
+                    {[...Array(5)].map((_, i) => (
+                      <MaterialIcons
+                        key={i}
+                        name={i < review.rating ? "star" : "star-border"}
+                        size={16}
+                        color="#FFD700"
+                      />
+                    ))}
+                  </View>
+                </View>
+                <Text style={styles.reviewDate}>{review.date}</Text>
+                <Text style={styles.reviewText}>{review.comment}</Text>
+                <TouchableOpacity
+                  style={styles.likeButton}
+                  onPress={() => handleLikeReview(review.id)}
+                >
+                  <Ionicons name="thumbs-up" size={16} color="#666" />
+                  <Text style={styles.likeCount}>{review.likes}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+
+          {/* Add Review */}
+          <View style={styles.addReviewContainer}>
+            <Text style={styles.addReviewTitle}>Écrire un avis</Text>
+            <TextInput
+              style={styles.reviewInput}
+              placeholder="Partagez vos pensées sur ce livre..."
+              placeholderTextColor="#999"
+              value={newReview}
+              onChangeText={setNewReview}
+              multiline
+            />
+            <TouchableOpacity
+              style={styles.submitReviewButton}
+              onPress={handleAddReview}
+              disabled={!newReview.trim()}
+            >
+              <Text style={styles.submitReviewText}>
+                Soumettre un commentaire
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Related Books */}
+        {book.relatedBooks.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Vous aimerez peut-être aussi
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.relatedBooksContainer}
+            >
+              {book.relatedBooks.map((book) => (
+                <Link
+                  href={`/bookstore/${book.id}` as any}
+                  key={book.id}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.relatedBookCard}>
+                    <Image
+                      source={{ uri: book.coverImage }}
+                      style={styles.relatedBookCover}
+                      resizeMode="cover"
+                    />
+                    <Text style={styles.relatedBookTitle} numberOfLines={1}>
+                      {book.title}
+                    </Text>
+                    <Text style={styles.relatedBookAuthor}>{book.author}</Text>
+                    <View style={styles.relatedBookFooter}>
+                      <Text style={styles.relatedBookPrice}>
+                        ${book.price.toFixed(2)}
+                      </Text>
+                      <View style={styles.relatedBookRating}>
+                        <MaterialIcons name="star" size={14} color="#FFD700" />
+                        <Text style={styles.relatedBookRatingText}>
+                          {book.rating}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
-    padding: 20,
-    paddingBottom: 40,
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: "#f9f9f9",
   },
   header: {
-    flexDirection: 'row',
-    marginTop: 40,
-    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "white",
   },
-  coverImage: {
-    width: 120,
-    height: 180,
-    borderRadius: 4,
-    marginRight: 16,
-  },
-  headerInfo: {
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
     flex: 1,
+    textAlign: "center",
+    marginHorizontal: 16,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  author: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
+  headerIcon: {
+    marginLeft: 12,
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+  heroSection: {
+    height: 300,
+    position: "relative",
+    backgroundColor: "#f0f0f0",
   },
-  ratingText: {
-    fontSize: 16,
-    color: '#333',
-    marginLeft: 4,
-    marginRight: 12,
+  heroCover: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
-  category: {
+  heroOverlay: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+  },
+  ratingBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.95)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  ratingBadgeText: {
     fontSize: 14,
-    color: '#666',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginLeft: 4,
+  },
+  infoCard: {
+    backgroundColor: "white",
+    margin: 16,
+    marginTop: -40,
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  categoryBadge: {
+    backgroundColor: "#e6fff0",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+    marginBottom: 12,
+  },
+  categoryBadgeText: {
+    fontSize: 12,
+    fontFamily: Fonts.type.semi,
+    color: "#06803A",
+  },
+  bookTitle: {
+    fontSize: 24,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 8,
+  },
+  bookAuthor: {
+    fontSize: 16,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    marginBottom: 16,
+  },
+  priceSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   price: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#06803A',
+    fontSize: 28,
+    fontFamily: Fonts.type.bold,
+    color: "#06803A",
   },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  detailsChips: {
+    flexDirection: "row",
+  },
+  chip: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  chipText: {
+    fontSize: 12,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    marginLeft: 4,
+  },
+  actionButtonsSection: {
+    paddingHorizontal: 16,
     marginBottom: 24,
   },
-  actionButton: {
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#f8f9fa',
-    width: '30%',
+  primaryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#06803A",
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
   },
-  inWishlist: {
-    backgroundColor: '#ffebee',
+  primaryButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.type.bold,
+    color: "white",
+    marginLeft: 8,
   },
-  inCart: {
-    backgroundColor: '#e8f5e9',
+  secondaryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#e6fff0",
+    padding: 16,
+    borderRadius: 16,
   },
-  actionButtonText: {
-    fontSize: 12,
-    marginTop: 4,
-    color: '#333',
+  secondaryButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.type.semi,
+    color: "#06803A",
+    marginLeft: 8,
   },
   section: {
-    marginBottom: 24,
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 16,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+  },
+  reviewStats: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  reviewStatsText: {
+    fontSize: 14,
+    fontFamily: Fonts.type.semi,
+    color: "#666",
+    marginLeft: 4,
   },
   description: {
     fontSize: 15,
-    lineHeight: 22,
-    color: '#333',
+    fontFamily: Fonts.type.primary,
+    lineHeight: 24,
+    color: "#555",
   },
-  detailsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 24,
+  infoGrid: {
+    gap: 16,
   },
-  detailItem: {
-    width: '48%',
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    alignItems: 'center',
+  infoItem: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  detailLabel: {
+  infoIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: "#e6fff0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  infoContent: {
+    flex: 1,
+  },
+  infoLabel: {
     fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+    marginBottom: 2,
   },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginTop: 2,
-  },
-  previewButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#e6ffebff',
-    marginBottom: 24,
-    borderRadius: 8,
-    padding: 16,
-  },
-  previewButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#06803A',
-    marginLeft: 8,
-  },
-  purchaseSection: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 24,
-  },
-  quantitySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  quantityButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#e0e0e0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginHorizontal: 16,
-  },
-  totalPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  buyButton: {
-    backgroundColor: '#06803A',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  buyButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  cartButton: {
-    backgroundColor: '#e6fff0ff',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-  },
-  cartButtonText: {
-    color: '#06803A',
-    fontSize: 16,
-    fontWeight: '600',
+  infoValue: {
+    fontSize: 15,
+    fontFamily: Fonts.type.semi,
+    color: "#333",
   },
   reviewContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   reviewAvatar: {
     width: 40,
@@ -577,36 +651,39 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reviewHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 4,
   },
   reviewUser: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontFamily: Fonts.type.semi,
+    color: "#333",
   },
   reviewRating: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   reviewDate: {
     fontSize: 12,
-    color: '#999',
+    fontFamily: Fonts.type.primary,
+    color: "#999",
     marginBottom: 8,
   },
   reviewText: {
     fontSize: 14,
-    color: '#333',
+    fontFamily: Fonts.type.primary,
+    color: "#555",
     lineHeight: 20,
     marginBottom: 8,
   },
   likeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   likeCount: {
     fontSize: 12,
-    color: '#666',
+    fontFamily: Fonts.type.primary,
+    color: "#666",
     marginLeft: 4,
   },
   addReviewContainer: {
@@ -614,74 +691,76 @@ const styles = StyleSheet.create({
   },
   addReviewTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontFamily: Fonts.type.semi,
+    color: "#333",
     marginBottom: 12,
   },
   reviewInput: {
-    backgroundColor: '#f8faf9ff',
-    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 12,
     padding: 12,
     minHeight: 100,
     marginBottom: 12,
     fontSize: 14,
-    color: '#333',
+    fontFamily: Fonts.type.primary,
+    color: "#333",
+    textAlignVertical: "top",
   },
   submitReviewButton: {
-    backgroundColor: '#06803A',
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-    opacity: 1,
-  },
-  submitReviewButtonDisabled: {
-    opacity: 0.5,
+    backgroundColor: "#06803A",
+    borderRadius: 12,
+    padding: 14,
+    alignItems: "center",
   },
   submitReviewText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: "#fff",
+    fontSize: 15,
+    fontFamily: Fonts.type.bold,
   },
   relatedBooksContainer: {
     paddingVertical: 8,
   },
   relatedBookCard: {
-    width: 150,
+    width: 140,
     marginRight: 16,
   },
   relatedBookCover: {
-    width: 150,
-    height: 200,
-    borderRadius: 4,
+    width: 140,
+    height: 180,
+    borderRadius: 12,
     marginBottom: 8,
+    backgroundColor: "#f0f0f0",
   },
   relatedBookTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
+    fontSize: 13,
+    fontFamily: Fonts.type.semi,
+    color: "#333",
+    marginBottom: 4,
   },
   relatedBookAuthor: {
     fontSize: 12,
-    color: '#666',
-    marginBottom: 6,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    marginBottom: 8,
   },
   relatedBookFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   relatedBookPrice: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#06803A',
+    fontFamily: Fonts.type.bold,
+    color: "#06803A",
   },
   relatedBookRating: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   relatedBookRatingText: {
     fontSize: 12,
-    color: '#666',
+    fontFamily: Fonts.type.primary,
+    color: "#666",
     marginLeft: 4,
   },
 });
