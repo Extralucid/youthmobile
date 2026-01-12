@@ -427,6 +427,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     backgroundColor: "white",
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1,
   },
   headerTitle: {
     fontSize: 18,

@@ -1,19 +1,17 @@
+import Fonts from "@/constants/Fonts";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
 import {
-    AntDesign,
-    Feather,
-    MaterialIcons
-} from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
-import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from 'react-native';
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Author = {
   id: string;
@@ -45,56 +43,57 @@ type Topic = {
 
 const TopicDetailScreen = () => {
   const { forumId, topicId } = useLocalSearchParams();
-  const [newPost, setNewPost] = useState('');
+  const [newPost, setNewPost] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
   // Sample topic data
   const topic: Topic = {
-    id: '1',
-    title: 'How to optimize performance in React Native?',
+    id: "1",
+    title: "How to optimize performance in React Native?",
     author: {
-      id: '1',
-      name: 'perf_guru',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-      role: 'Moderator',
-      joinDate: 'Jan 2020',
-      postsCount: 342
+      id: "1",
+      name: "perf_guru",
+      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+      role: "Moderator",
+      joinDate: "Jan 2020",
+      postsCount: 342,
     },
-    createdAt: '1 semaine',
+    createdAt: "1 semaine",
     views: 1024,
     isLocked: false,
     posts: [
       {
-        id: '1',
-        content: 'I\'ve been having performance issues with my React Native app, especially with long lists. What are some proven strategies to optimize performance? I\'ve already tried memoizing components but still seeing jank.',
-        date: '1 heure',
+        id: "1",
+        content:
+          "I've been having performance issues with my React Native app, especially with long lists. What are some proven strategies to optimize performance? I've already tried memoizing components but still seeing jank.",
+        date: "1 heure",
         likes: 24,
         author: {
-          id: '1',
-          name: 'perf_guru',
-          avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-          role: 'Moderator',
-          joinDate: 'Jan 2020',
-          postsCount: 342
+          id: "1",
+          name: "perf_guru",
+          avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+          role: "Moderator",
+          joinDate: "Jan 2020",
+          postsCount: 342,
         },
-        isOriginalPost: true
+        isOriginalPost: true,
       },
       // More posts...
-    ]
+    ],
   };
 
   const handleAddPost = () => {
     if (newPost.trim()) {
       // In a real app, this would add a new post
-      console.log('Adding new post:', newPost);
-      setNewPost('');
+      console.log("Adding new post:", newPost);
+      setNewPost("");
       setReplyingTo(null);
     }
   };
 
   const handleLikePost = (postId: string) => {
     // In a real app, this would update the like count
-    console.log('Liked post:', postId);
+    console.log("Liked post:", postId);
   };
 
   const handleReply = (postId: string) => {
@@ -102,346 +101,487 @@ const TopicDetailScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Topic Header */}
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>{topic.title}</Text>
-        <View style={styles.meta}>
-          <Text style={styles.metaText}>Commencer par {topic.author.name}</Text>
-          <Text style={styles.metaText}>•</Text>
-          <Text style={styles.metaText}>{topic.createdAt}</Text>
-          <Text style={styles.metaText}>•</Text>
-          <Text style={styles.metaText}>{topic.views} vues</Text>
-          {topic.isLocked && (
-            <>
-              <Text style={styles.metaText}>•</Text>
-              <MaterialIcons name="lock" size={16} color="#f44336" />
-            </>
-          )}
-        </View>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Discussion</Text>
+        <TouchableOpacity>
+          <Ionicons name="ellipsis-horizontal" size={24} color="#333" />
+        </TouchableOpacity>
       </View>
 
-      {/* Posts List */}
-      <View style={styles.postsContainer}>
-        {topic.posts.map(post => (
-          <View key={post.id} style={styles.postCard}>
-            <View style={styles.postHeader}>
-              <Image 
-                source={{ uri: post.author.avatar }} 
-                style={styles.authorAvatar}
-              />
-              <View style={styles.authorInfo}>
-                <Text style={styles.authorName}>{post.author.name}</Text>
-                <View style={styles.authorMeta}>
-                  <Text style={styles.authorRole}>{post.author.role}</Text>
-                  <Text style={styles.authorJoinDate}>Rejoint {post.author.joinDate}</Text>
-                  <Text style={styles.authorPosts}>{post.author.postsCount} posts</Text>
-                </View>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Topic Header Card */}
+        <View style={styles.topicHeaderCard}>
+          <View style={styles.topicTitleSection}>
+            <Text style={styles.title}>{topic.title}</Text>
+            {topic.isLocked && (
+              <View style={styles.lockedBadge}>
+                <MaterialIcons name="lock" size={14} color="#fff" />
+                <Text style={styles.lockedBadgeText}>Verrouillé</Text>
               </View>
-              {post.isOriginalPost && (
-                <View style={styles.originalPostBadge}>
-                  <Text style={styles.originalPostBadgeText}>OP</Text>
-                </View>
-              )}
+            )}
+          </View>
+
+          <View style={styles.topicMeta}>
+            <View style={styles.metaItem}>
+              <Ionicons name="person" size={14} color="#666" />
+              <Text style={styles.metaText}>{topic.author.name}</Text>
             </View>
-            
-            <View style={styles.postContent}>
-              <Text style={styles.postText}>{post.content}</Text>
-              <Text style={styles.postDate}>{post.date}</Text>
+            <View style={styles.metaDot} />
+            <View style={styles.metaItem}>
+              <Ionicons name="time" size={14} color="#666" />
+              <Text style={styles.metaText}>{topic.createdAt}</Text>
             </View>
-            
-            <View style={styles.postActions}>
-              <TouchableOpacity 
-                style={styles.actionButton}
-                onPress={() => handleLikePost(post.id)}
-              >
-                <AntDesign name="like2" size={16} color="#666" />
-                <Text style={styles.actionText}>Jaimes ({post.likes})</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.actionButton}
-                onPress={() => handleReply(post.id)}
-              >
-                <Feather name="message-square" size={16} color="#666" />
-                <Text style={styles.actionText}>Repondre</Text>
-              </TouchableOpacity>
-              
-              {post.id === replyingTo && (
-                <View style={styles.replyForm}>
-                  <TextInput
-                    style={styles.replyInput}
-                    placeholder="Ecrivez votre réponse..."
-                    placeholderTextColor="#999"
-                    multiline
-                    value={newPost}
-                    onChangeText={setNewPost}
-                  />
-                  <View style={styles.replyButtons}>
-                    <TouchableOpacity 
-                      style={styles.cancelButton}
-                      onPress={() => setReplyingTo(null)}
-                    >
-                      <Text style={styles.cancelButtonText}>Annuler</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={styles.submitButton}
-                      onPress={handleAddPost}
-                      disabled={!newPost.trim()}
-                    >
-                      <Text style={styles.submitButtonText}>Postez votre réponse</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
+            <View style={styles.metaDot} />
+            <View style={styles.metaItem}>
+              <Ionicons name="eye" size={14} color="#666" />
+              <Text style={styles.metaText}>{topic.views} vues</Text>
             </View>
           </View>
-        ))}
-      </View>
-
-      {/* Add New Post (if not locked) */}
-      {!topic.isLocked && (
-        <View style={styles.newPostContainer}>
-          <Text style={styles.newPostTitle}>Postez votre réponse</Text>
-          <TextInput
-            style={styles.newPostInput}
-            placeholder="Écrivez votre réponse..."
-            placeholderTextColor="#999"
-            multiline
-            value={newPost}
-            onChangeText={setNewPost}
-          />
-          <TouchableOpacity 
-            style={[
-              styles.newPostButton,
-              !newPost.trim() && styles.newPostButtonDisabled
-            ]}
-            onPress={handleAddPost}
-            disabled={!newPost.trim()}
-          >
-            <Text style={styles.newPostButtonText}>Publier une réponse</Text>
-          </TouchableOpacity>
         </View>
-      )}
 
-      {topic.isLocked && (
-        <View style={styles.lockedNotice}>
-          <MaterialIcons name="lock" size={24} color="#f44336" />
-          <Text style={styles.lockedText}>Ce sujet est verrouillé</Text>
+        {/* Posts List */}
+        <View style={styles.postsSection}>
+          <Text style={styles.sectionTitle}>{topic.posts.length} Réponses</Text>
+          {topic.posts.map((post, index) => (
+            <View key={post.id} style={styles.postCard}>
+              <View style={styles.postSidebar}>
+                <Image
+                  source={{ uri: post.author.avatar }}
+                  style={styles.authorAvatar}
+                  resizeMode="cover"
+                />
+                <View style={styles.authorDetails}>
+                  <Text style={styles.authorName}>{post.author.name}</Text>
+                  <View style={styles.authorRoleBadge}>
+                    <Text style={styles.authorRole}>{post.author.role}</Text>
+                  </View>
+                  <Text style={styles.authorJoinDate}>
+                    Rejoint {post.author.joinDate}
+                  </Text>
+                  <Text style={styles.authorPosts}>
+                    {post.author.postsCount} posts
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.postMain}>
+                {post.isOriginalPost && (
+                  <View style={styles.originalPostBadge}>
+                    <Text style={styles.originalPostBadgeText}>
+                      Post Original
+                    </Text>
+                  </View>
+                )}
+                <Text style={styles.postText}>{post.content}</Text>
+                <Text style={styles.postDate}>{post.date}</Text>
+
+                <View style={styles.postActions}>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => handleLikePost(post.id)}
+                  >
+                    <Ionicons name="thumbs-up" size={16} color="#666" />
+                    <Text style={styles.actionText}>
+                      {post.likes} J&apos;aimes
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => handleReply(post.id)}
+                  >
+                    <Feather name="message-square" size={16} color="#666" />
+                    <Text style={styles.actionText}>Répondre</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {post.id === replyingTo && (
+                  <View style={styles.replyForm}>
+                    <TextInput
+                      style={styles.replyInput}
+                      placeholder="Écrivez votre réponse..."
+                      placeholderTextColor="#999"
+                      multiline
+                      value={newPost}
+                      onChangeText={setNewPost}
+                    />
+                    <View style={styles.replyButtons}>
+                      <TouchableOpacity
+                        style={styles.cancelButton}
+                        onPress={() => setReplyingTo(null)}
+                      >
+                        <Text style={styles.cancelButtonText}>Annuler</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.submitButton}
+                        onPress={handleAddPost}
+                        disabled={!newPost.trim()}
+                      >
+                        <Text style={styles.submitButtonText}>Publier</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </View>
+          ))}
         </View>
-      )}
-    </ScrollView>
+
+        {/* Add New Post (if not locked) */}
+        {!topic.isLocked && (
+          <View style={styles.newPostContainer}>
+            <View style={styles.newPostHeader}>
+              <Ionicons name="chatbox-ellipses" size={20} color="#06803A" />
+              <Text style={styles.newPostTitle}>Ajouter une réponse</Text>
+            </View>
+            <TextInput
+              style={styles.newPostInput}
+              placeholder="Partagez votre opinion sur ce sujet..."
+              placeholderTextColor="#999"
+              multiline
+              value={newPost}
+              onChangeText={setNewPost}
+            />
+            <TouchableOpacity
+              style={[
+                styles.newPostButton,
+                !newPost.trim() && styles.newPostButtonDisabled,
+              ]}
+              onPress={handleAddPost}
+              disabled={!newPost.trim()}
+            >
+              <Ionicons name="send" size={18} color="#fff" />
+              <Text style={styles.newPostButtonText}>Publier la réponse</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {topic.isLocked && (
+          <View style={styles.lockedNotice}>
+            <MaterialIcons name="lock" size={24} color="#f44336" />
+            <Text style={styles.lockedText}>
+              Ce sujet est verrouillé et n&apos;accepte plus de nouvelles
+              réponses
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
-    padding: 16,
-    paddingBottom: 32,
-    backgroundColor: '#f8f9fa',
+    flex: 1,
+    backgroundColor: "#f9f9f9",
   },
   header: {
-    marginBottom: 20,
-    marginTop: 40,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "white",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    flex: 1,
+    textAlign: "center",
+    marginHorizontal: 16,
+  },
+  topicHeaderCard: {
+    backgroundColor: "white",
+    margin: 16,
+    marginTop: 8,
+    padding: 20,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  topicTitleSection: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 12,
+    gap: 12,
   },
   title: {
+    flex: 1,
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    lineHeight: 28,
   },
-  meta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+  lockedBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f44336",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  lockedBadgeText: {
+    color: "#fff",
+    fontSize: 11,
+    fontFamily: Fonts.type.semi,
+  },
+  topicMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  metaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   metaText: {
-    fontSize: 14,
-    color: '#666',
-    marginRight: 8,
+    fontSize: 13,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
   },
-  postsContainer: {
+  metaDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#ccc",
+    marginHorizontal: 8,
+  },
+  postsSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 80,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
     marginBottom: 16,
   },
   postCard: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: "#fff",
+    borderRadius: 12,
     padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
+    marginBottom: 12,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  postHeader: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    alignItems: 'center',
+  postSidebar: {
+    alignItems: "center",
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
   },
   authorAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 12,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 12,
+    backgroundColor: "#f0f0f0",
   },
-  authorInfo: {
-    flex: 1,
+  authorDetails: {
+    alignItems: "center",
   },
   authorName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
+    fontSize: 15,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 6,
   },
-  authorMeta: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  authorRoleBadge: {
+    backgroundColor: "#e6fff0",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginBottom: 6,
   },
   authorRole: {
-    fontSize: 12,
-    color: '#06803A',
-    marginRight: 8,
+    fontSize: 11,
+    fontFamily: Fonts.type.semi,
+    color: "#06803A",
   },
   authorJoinDate: {
-    fontSize: 12,
-    color: '#666',
-    marginRight: 8,
+    fontSize: 11,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+    marginBottom: 2,
   },
   authorPosts: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: 11,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+  },
+  postMain: {
+    flex: 1,
   },
   originalPostBadge: {
-    backgroundColor: '#06803A',
-    borderRadius: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    backgroundColor: "#06803A",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: "flex-start",
+    marginBottom: 12,
   },
   originalPostBadgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  postContent: {
-    marginBottom: 12,
+    color: "#fff",
+    fontSize: 11,
+    fontFamily: Fonts.type.bold,
   },
   postText: {
     fontSize: 15,
-    lineHeight: 22,
-    color: '#333',
-    marginBottom: 8,
+    fontFamily: Fonts.type.primary,
+    lineHeight: 24,
+    color: "#333",
+    marginBottom: 12,
   },
   postDate: {
     fontSize: 12,
-    color: '#999',
-    fontStyle: 'italic',
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+    marginBottom: 12,
   },
   postActions: {
+    flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
     paddingTop: 12,
+    gap: 16,
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   actionText: {
-    fontSize: 14,
-    color: '#666',
-    marginLeft: 4,
+    fontSize: 13,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
   },
   replyForm: {
     marginTop: 12,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderRadius: 8,
     padding: 12,
   },
   replyInput: {
     minHeight: 80,
-    fontSize: 15,
-    color: '#333',
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
     marginBottom: 12,
   },
   replyButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     gap: 8,
   },
   cancelButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    borderRadius: 8,
   },
   cancelButtonText: {
-    color: '#666',
+    fontFamily: Fonts.type.semi,
+    color: "#666",
   },
   submitButton: {
-    backgroundColor: '#06803A',
+    backgroundColor: "#06803A",
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
   submitButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontFamily: Fonts.type.semi,
   },
   newPostContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: "#fff",
+    borderRadius: 12,
     padding: 16,
-    shadowColor: '#000',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
+  newPostHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
+  },
   newPostTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
   },
   newPostInput: {
     minHeight: 100,
-    fontSize: 15,
-    color: '#333',
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
     marginBottom: 12,
-  },
-  newPostButton: {
-    backgroundColor: '#06803A',
+    backgroundColor: "#f9f9f9",
     borderRadius: 8,
     padding: 12,
-    alignItems: 'center',
+  },
+  newPostButton: {
+    backgroundColor: "#06803A",
+    borderRadius: 8,
+    padding: 14,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
   },
   newPostButtonDisabled: {
     opacity: 0.5,
   },
   newPostButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: "#fff",
+    fontSize: 15,
+    fontFamily: Fonts.type.semi,
   },
   lockedNotice: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    shadowColor: '#000',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
+    gap: 12,
   },
   lockedText: {
-    fontSize: 16,
-    color: '#666',
-    marginLeft: 8,
+    flex: 1,
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    textAlign: "center",
   },
 });
 

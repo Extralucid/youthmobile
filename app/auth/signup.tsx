@@ -1,20 +1,26 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Snackbar, TextInput } from 'react-native-paper';
-import login from './login';
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { Button, Snackbar, TextInput } from "react-native-paper";
+import login from "./login";
 
 export default function SignupScreen() {
-
   const [finger, setFinger] = useState(null);
-  const [email, setEmail] = React.useState('');
-  const [unom, setUnom] = React.useState('');
-  const [uprenom, setUprenom] = React.useState('');
-  const [phone, setPhone] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [unom, setUnom] = React.useState("");
+  const [uprenom, setUprenom] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [visible, setVisible] = React.useState(false);
-  const [message, setMessage] = React.useState('');
+  const [message, setMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const onToggleSnackBar = () => setVisible(!visible);
@@ -25,8 +31,8 @@ export default function SignupScreen() {
   };
 
   async function redirect() {
-    if (phone == '' || password == '') {
-      setMessage('Remplissez tous les champs !');
+    if (phone == "" || password == "") {
+      setMessage("Remplissez tous les champs !");
       onToggleSnackBar();
     } else {
       await login();
@@ -34,20 +40,26 @@ export default function SignupScreen() {
   }
 
   const goToLogin = async () => {
-    router.replace('/auth/login');
-     //router.replace('/onboarding/categories');
+    router.replace("/auth/login");
+    //router.replace('/onboarding/categories');
   };
 
-
-    const goToHome = async () => {
-     //router.replace('/onboarding/categories');
+  const goToHome = async () => {
+    //router.replace('/onboarding/categories');
   };
 
+  const goToCodeOTP = async () => {
+    console.log("Navigating to Code OTP Screen");
+    router.replace("/auth/codeOTP");
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logo}
+        />
         <Text style={styles.fieldsetTitle}>YouthConnekt BF</Text>
         <View style={styles.formGroup}>
           <TextInput
@@ -95,24 +107,37 @@ export default function SignupScreen() {
             placeholder="Entrez votre mot de passe"
             value={password}
             secureTextEntry={showPassword}
-            style={{ marginBottom: '2%', backgroundColor: '#F2F2F2' }}
+            style={{ marginBottom: "2%", backgroundColor: "#F2F2F2" }}
             activeUnderlineColor="#ABBAC8"
             placeholderTextColor="#ABBAC8"
             onChangeText={(text) => setPassword(text)}
-            right={<TextInput.Icon icon="eye" onPress={() => AffichePassword()} />}
+            right={
+              <TextInput.Icon icon="eye" onPress={() => AffichePassword()} />
+            }
           />
           {/*<Text style={styles.forgetPasswordText} onPress={() => navigation.navigate('ForgetPassword')}>Mot
                         de passe oublié ?</Text>*/}
-          <Button mode="contained" style={styles.buttonLogin} onPress={() => goToHome()}>
+          <Button
+            mode="contained"
+            style={styles.buttonLogin}
+            onPress={() => goToCodeOTP()}
+          >
             S'inscrire
           </Button>
-          
-          <View style={{ flexDirection: 'row' }}>
+
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.leftLine}></View>
-            <Text style={{ flex: 1, fontSize: 17, textAlign: 'center' }}>Ou</Text>
+            <Text style={{ flex: 1, fontSize: 17, textAlign: "center" }}>
+              Ou
+            </Text>
             <View style={styles.rightLine}></View>
           </View>
-          <Text style={styles.SignInTitle} onPress={() => { goToLogin(); }}>
+          <Text
+            style={styles.SignInTitle}
+            onPress={() => {
+              goToLogin();
+            }}
+          >
             Connectez-vous
           </Text>
         </View>
@@ -128,7 +153,7 @@ export default function SignupScreen() {
         visible={visible}
         onDismiss={onDismissSnackBar}
         action={{
-          label: 'Compris',
+          label: "Compris",
           onPress: () => {
             onToggleSnackBar();
           },
@@ -140,89 +165,88 @@ export default function SignupScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   print: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
-    marginBottom: '6%',
+    marginBottom: "6%",
   },
   formContainer: {
     borderRadius: 10,
-    borderColor: 'lightgray',
-    width: '90%',
+    borderColor: "lightgray",
+    width: "90%",
     padding: 25,
   },
   textInput: {
-    marginBottom: '9%',
-    backgroundColor: '#F2F2F2',
+    marginBottom: "9%",
+    backgroundColor: "#F2F2F2",
   },
   formGroup: {
-    paddingTop: '9%',
+    paddingTop: "9%",
   },
   buttonLogin: {
-    marginBottom: '5%',
-    marginTop: '9%',
-    backgroundColor: '#F59B21',
+    marginBottom: "5%",
+    marginTop: "9%",
+    backgroundColor: "#F59B21",
     borderRadius: 8,
   },
   fieldsetTitle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 21,
-    textAlign: 'center',
-    marginBottom: '0%',
+    textAlign: "center",
+    marginBottom: "0%",
   },
   SignInTitle: {
-    textAlign: 'center',
-    color: '#F59B21',
-    marginTop: '4%',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    textAlign: "center",
+    color: "#F59B21",
+    marginTop: "4%",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
   forgetPasswordText: {
-    textAlign: 'right',
-    color: '#F59B21',
-    textDecorationLine: 'underline',
-    marginBottom: '7%',
+    textAlign: "right",
+    color: "#F59B21",
+    textDecorationLine: "underline",
+    marginBottom: "7%",
   },
   leftLine: {
     flex: 2,
     borderWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: "lightgray",
     height: 0,
-    position: 'relative',
-    top: '4%',
+    position: "relative",
+    top: "4%",
   },
   rightLine: {
     flex: 2,
     borderWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: "lightgray",
     height: 0,
-    position: 'relative',
-    top: '4%',
+    position: "relative",
+    top: "4%",
   },
   logo: {
     width: 140,
     height: 87,
-    alignSelf: 'center',
-    marginBottom: '9%',
+    alignSelf: "center",
+    marginBottom: "9%",
   },
   loading: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
     opacity: 0.5,
   },
 });

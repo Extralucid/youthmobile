@@ -1,7 +1,8 @@
-// MyChecksScreen.tsx
-import { Ionicons } from '@expo/vector-icons';
-import { Link, router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import Fonts from "@/constants/Fonts";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { ImageBackground } from "expo-image";
+import { Link, router } from "expo-router";
+import React, { useMemo, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,70 +12,67 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Check = {
   id: string;
   brand: string;
-  logo?: number;              // local asset
+  logo?: number; // local asset
   amount: string;
   date: string;
-  status: 'En attente';
+  status: "En attente";
 };
 
 const ALL_DATA: Check[] = [
   {
-    id: '1',
-    brand: 'SANCFIS',
-    logo: require('../../assets/images/hermes-logo.png'),
-    amount: 'xof1,500.67',
-    date: '12/12/2020',
-    status: 'En attente',
+    id: "1",
+    brand: "SANCFIS",
+    logo: require("../../assets/images/hermes-logo.png"),
+    amount: "xof1,500.67",
+    date: "12/12/2020",
+    status: "En attente",
   },
   {
-    id: '2',
-    brand: 'Orange',
-    logo: require('../../assets/images/hermes-logo.png'),
-    amount: 'xof1,245.17',
-    date: '22/10/2025',
-    status: 'En attente',
+    id: "2",
+    brand: "Orange",
+    logo: require("../../assets/images/hermes-logo.png"),
+    amount: "xof1,245.17",
+    date: "22/10/2025",
+    status: "En attente",
   },
   {
-    id: '3',
+    id: "3",
     brand: "ATOS",
-    logo: require('../../assets/images/hermes-logo.png'),
-    amount: 'xof545.28',
-    date: '12/10/2009',
-    status: 'En attente',
+    logo: require("../../assets/images/hermes-logo.png"),
+    amount: "xof545.28",
+    date: "12/10/2009",
+    status: "En attente",
   },
   {
-    id: '4',
-    brand: 'Kenzo',
-    logo: require('../../assets/images/hermes-logo.png'),
-    amount: 'xof375.37',
-    date: '12/11/2021',
-    status: 'En attente',
+    id: "4",
+    brand: "Kenzo",
+    logo: require("../../assets/images/hermes-logo.png"),
+    amount: "xof375.37",
+    date: "12/11/2021",
+    status: "En attente",
   },
 ];
 
-
-
-
-
-const FILTER_OPTIONS = ['Tous', 'En attente', 'Valide'];
+const FILTER_OPTIONS = ["Tous", "En attente", "Valide"];
 
 export default function EntreprisesScreen() {
   const [showSearch, setShowSearch] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [activeChip, setActiveChip] = useState('Tous');
+  const [searchText, setSearchText] = useState("");
+  const [activeChip, setActiveChip] = useState("Tous");
 
   /* ---------- Filtering & Search ---------- */
   const filteredData = useMemo(() => {
     let data = ALL_DATA;
 
     // 1. Chip filter
-    if (activeChip !== 'Tous') {
+    if (activeChip !== "Tous") {
       data = data.filter((c) => c.status === activeChip);
     }
 
@@ -91,29 +89,77 @@ export default function EntreprisesScreen() {
   const renderItem = ({ item }: { item: Check }) => (
     <Link href={`/settings/entrepriseDetail`} key={item.id} asChild>
       <TouchableOpacity style={styles.card}>
+        {/* Banner flou en arrière-plan */}
         <View style={styles.cardHeader}>
-          <View style={styles.brandRow}>
-            <Image source={item.logo} style={styles.logo} />
-            <Text style={styles.brandText}>{item.brand}</Text>
+          <ImageBackground
+            source={require("../../assets/images/sample1.jpg")}
+            style={styles.bannerBackground}
+            imageStyle={styles.bannerImage}
+            blurRadius={8}
+          >
+            <View style={styles.overlay} />
+          </ImageBackground>
+
+          {/* Contenu au premier plan */}
+          <View style={styles.headerContent}>
+            <Image
+              source={item.logo}
+              style={styles.companyLogo}
+              resizeMode="cover"
+            />
+            <View style={styles.companyMeta}>
+              <Text style={styles.brandText}>{item.brand}</Text>
+              <View style={styles.verifiedRow}>
+                <Ionicons name="shield-checkmark" size={14} color="#F59B21" />
+                <Text style={styles.verifiedText}>Partenaire vérifié</Text>
+              </View>
+            </View>
           </View>
-          <Pressable style={styles.checkbox}>
-            <View style={styles.checkboxInner} />
-          </Pressable>
         </View>
 
-        <View style={styles.labelsRow}>
-          <View style={styles.labelGroup}>
-            <Text style={styles.label}>Souscription</Text>
-            <Text style={styles.value}>{item.amount}</Text>
+        {/* Séparateur */}
+        <View style={styles.divider} />
+
+        {/* Stats en grille avec bordures */}
+        <View style={styles.statsGrid}>
+          <View style={styles.statBox}>
+            <Ionicons name="calendar-outline" size={20} color="#F59B21" />
+            <Text style={styles.statLabel}>Rejoint le</Text>
+            <Text style={styles.statValue}>{item.date}</Text>
           </View>
-          <View style={styles.labelGroup}>
-            <Text style={styles.label}>Rejoint le</Text>
-            <Text style={styles.value}>{item.date}</Text>
+          <View style={styles.statBoxDivider} />
+          <View style={styles.statBox}>
+            <Ionicons name="people-outline" size={20} color="#F59B21" />
+            <Text style={styles.statLabel}>Employés</Text>
+            <Text style={styles.statValue}>250+</Text>
           </View>
-          <View style={styles.labelGroup}>
-            <Text style={styles.label}>Statut</Text>
-            <Text style={[styles.value, styles.status]}>{item.status}</Text>
+          <View style={styles.statBoxDivider} />
+          <View style={styles.statBox}>
+            <Ionicons name="star" size={20} color="#FFD700" />
+            <Text style={styles.statLabel}>Note</Text>
+            <Text style={styles.statValue}>4.8</Text>
           </View>
+        </View>
+
+        {/* Séparateur */}
+        <View style={styles.divider} />
+
+        {/* Contacts footer */}
+        <View style={styles.contactRow}>
+          <TouchableOpacity style={styles.contactItem}>
+            <Ionicons name="call" size={20} color="#06803A" />
+            <Text style={styles.contactLabel}>Appeler</Text>
+          </TouchableOpacity>
+          <View style={styles.contactDivider} />
+          <TouchableOpacity style={styles.contactItem}>
+            <Ionicons name="mail" size={20} color="#06803A" />
+            <Text style={styles.contactLabel}>Email</Text>
+          </TouchableOpacity>
+          <View style={styles.contactDivider} />
+          <TouchableOpacity style={styles.contactItem}>
+            <Ionicons name="location" size={20} color="#06803A" />
+            <Text style={styles.contactLabel}>Adresse</Text>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </Link>
@@ -123,16 +169,10 @@ export default function EntreprisesScreen() {
     <Pressable
       key={label}
       onPress={() => setActiveChip(label)}
-      style={[
-        styles.chip,
-        activeChip === label && styles.chipActive,
-      ]}
+      style={[styles.chip, activeChip === label && styles.chipActive]}
     >
       <Text
-        style={[
-          styles.chipText,
-          activeChip === label && styles.chipTextActive,
-        ]}
+        style={[styles.chipText, activeChip === label && styles.chipTextActive]}
       >
         {label}
       </Text>
@@ -140,155 +180,329 @@ export default function EntreprisesScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      {/* ---------- Header ---------- */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#333" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Les entreprises</Text>
-        <View style={styles.headerButtons}>
-          <Pressable onPress={() => setShowSearch(!showSearch)}>
-            <Text style={styles.icon}>🔍</Text>
-          </Pressable>
-          <Pressable style={{ marginLeft: 12 }}>
-            <Text style={styles.icon}>⋯</Text>
-          </Pressable>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          {showSearch ? (
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Rechercher..."
+                value={searchText}
+                onChangeText={setSearchText}
+                autoFocus={true}
+              />
+              <TouchableOpacity
+                style={styles.closeSearch}
+                onPress={() => {
+                  setShowSearch(false);
+                  setSearchText("");
+                }}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity onPress={() => router.back()}>
+                <Ionicons name="arrow-back" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Entreprises Partenaires</Text>
+              <TouchableOpacity onPress={() => setShowSearch(true)}>
+                <Ionicons name="search" size={24} color="#333" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsContent}
+        >
+          {FILTER_OPTIONS.map(renderChip)}
+        </ScrollView>
       </View>
 
-      {/* ---------- Search input (animated show/hide) ---------- */}
-      {showSearch && (
-        <View style={styles.searchWrapper}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="chercher par activites..."
-            value={searchText}
-            onChangeText={setSearchText}
-            autoFocus
-          />
-        </View>
-      )}
-
-      {/* ---------- Chips ---------- */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.chipsScroll}
-        contentContainerStyle={styles.chipsContent}
-      >
-        {FILTER_OPTIONS.map(renderChip)}
-      </ScrollView>
-
-      {/* ---------- List ---------- */}
       <FlatList
         data={filteredData}
         keyExtractor={(c) => c.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <Text style={styles.empty}>No checks found</Text>
+          <View style={styles.emptyState}>
+            <MaterialIcons name="business" size={60} color="#ddd" />
+            <Text style={styles.emptyText}>Aucune entreprise trouvée</Text>
+            <Text style={styles.emptySubtext}>
+              Essayez un autre filtre ou recherche
+            </Text>
+          </View>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
-/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  headerContainer: {
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingBottom: 12,
+  },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 40,
-    paddingBottom: 8,
-    backgroundColor: '#fff',
-    elevation: 2,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerTitle: {
+    fontSize: 20,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
   },
-  title: { fontSize: 20, fontWeight: '600', color: '#111' },
-  headerButtons: { flexDirection: 'row' },
-  icon: { fontSize: 20 },
-
-  searchWrapper: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    backgroundColor: '#fff',
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
+  searchContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    fontSize: 15,
+    height: 40,
   },
-
-  chipsScroll: { backgroundColor: '#fff' },
-  chipsContent: { paddingHorizontal: 16, paddingVertical: 8, height: 35, },
+  searchInput: {
+    flex: 1,
+    height: "100%",
+    paddingVertical: 0,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
+  },
+  closeSearch: {
+    marginLeft: 8,
+  },
+  chipsContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+    paddingTop: 8,
+  },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    height: 30,
-    borderRadius: 16,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: "#f5f5f5",
   },
   chipActive: {
-    backgroundColor: '#007bff',
-    borderColor: '#007bff',
+    backgroundColor: "#06803A",
   },
-  chipText: { fontSize: 13, color: '#555' },
-  chipTextActive: { color: '#fff' },
-
-  listContent: { paddingHorizontal: 16, paddingVertical: 12 },
-  separator: { height: 12 },
-  empty: { textAlign: 'center', marginTop: 40, color: '#888' },
-
-  /* Card styles unchanged from previous answer */
+  chipText: {
+    fontSize: 13,
+    fontFamily: Fonts.type.semi,
+    color: "#666",
+  },
+  chipTextActive: {
+    color: "#fff",
+  },
+  listContent: {
+    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 80,
+  },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    elevation: 1,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
   cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    position: "relative",
     marginBottom: 16,
+    borderRadius: 16,
+    overflow: "hidden",
+    height: 180,
   },
-  brandRow: { flexDirection: 'row', alignItems: 'center' },
-  logo: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
-  brandText: { fontSize: 16, fontWeight: '500', color: '#000' },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: '#aaa',
-    justifyContent: 'center',
-    alignItems: 'center',
+  bannerBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
   },
-  checkboxInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#aaa',
+  bannerImage: {
+    borderRadius: 16,
   },
-  labelsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
   },
-  labelGroup: { flex: 1 },
-  label: { fontSize: 12, color: '#666', marginBottom: 2 },
-  value: { fontSize: 14, fontWeight: '500', color: '#111' },
-  status: { color: '#d9534f' },
+  headerContent: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+    paddingVertical: 20,
+  },
+  companyLogo: {
+    width: 70,
+    height: 70,
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 3,
+    borderColor: "#fff",
+    backgroundColor: "#fff",
+  },
+  companyMeta: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  brandText: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#fff",
+    marginBottom: 4,
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  verifiedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  verifiedText: {
+    fontSize: 12,
+    fontFamily: Fonts.type.semi,
+    color: "#F59B21",
+  },
+  statusBadge: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF9E6",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#F57C00",
+  },
+  statusText: {
+    fontSize: 11,
+    fontFamily: Fonts.type.semi,
+    color: "#F57C00",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#f0f0f0",
+    marginVertical: 14,
+  },
+  amountSection: {
+    alignItems: "center",
+    paddingVertical: 4,
+  },
+  amountLabel: {
+    fontSize: 12,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+    marginBottom: 8,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  amountText: {
+    fontSize: 22,
+    fontFamily: Fonts.type.bold,
+    color: "#06803A",
+  },
+  statsGrid: {
+    flexDirection: "row",
+    paddingVertical: 4,
+  },
+  statBox: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  statBoxDivider: {
+    width: 1,
+    backgroundColor: "#f0f0f0",
+  },
+  statLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+    marginTop: 6,
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 15,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+  },
+  contactRow: {
+    flexDirection: "row",
+    paddingTop: 4,
+  },
+  contactItem: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 10,
+    gap: 4,
+  },
+  contactDivider: {
+    width: 1,
+    backgroundColor: "#f0f0f0",
+  },
+  contactLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.type.semi,
+    color: "#06803A",
+  },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#999",
+    marginTop: 16,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "#bbb",
+    marginTop: 8,
+  },
 });

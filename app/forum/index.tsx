@@ -1,6 +1,7 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Link, router } from 'expo-router';
-import React, { useState } from 'react';
+import Fonts from "@/constants/Fonts";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
 import {
   Image,
   ScrollView,
@@ -8,8 +9,9 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Forum = {
   id: string;
@@ -25,280 +27,380 @@ type Forum = {
 };
 
 const ForumScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
 
   // Sample forum data
   const forums: Forum[] = [
     {
-      id: '1',
-      title: 'React Native Discussions',
-      description: 'Everything about React Native development',
-      icon: 'https://randomuser.me/api/portraits/men/32.jpg',
+      id: "1",
+      title: "React Native Discussions",
+      description: "Everything about React Native development",
+      icon: "https://randomuser.me/api/portraits/men/32.jpg",
       topicsCount: 1243,
       postsCount: 15678,
       lastPost: {
-        user: 'dev_user123',
-        date: '2 hours ago'
-      }
+        user: "dev_user123",
+        date: "2 hours ago",
+      },
     },
     {
-      id: '2',
-      title: 'JavaScript Help',
-      description: 'Get help with JavaScript problems',
-      icon: 'https://randomuser.me/api/portraits/men/32.jpg',
+      id: "2",
+      title: "JavaScript Help",
+      description: "Get help with JavaScript problems",
+      icon: "https://randomuser.me/api/portraits/men/32.jpg",
       topicsCount: 892,
       postsCount: 10234,
       lastPost: {
-        user: 'js_wizard',
-        date: '1 day ago'
-      }
+        user: "js_wizard",
+        date: "1 day ago",
+      },
     },
     // Add more forums...
   ];
 
   // Filter forums based on search
-  const filteredForums = forums.filter(forum =>
-    forum.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    forum.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredForums = forums.filter(
+    (forum) =>
+      forum.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      forum.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <View style={styles.container}>
-      {/* Search Bar */}
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      {/* Header */}
       <View style={styles.header}>
         {showSearch ? (
           <View style={styles.searchContainer}>
+            <Ionicons
+              name="search"
+              size={20}
+              color="#999"
+              style={styles.searchIcon}
+            />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search checks..."
+              placeholder="Rechercher un forum..."
+              placeholderTextColor="#999"
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus={true}
             />
             <TouchableOpacity
-              style={styles.closeSearch}
               onPress={() => {
                 setShowSearch(false);
-                setSearchQuery('');
+                setSearchQuery("");
               }}
             >
-              <Ionicons name="close" size={24} color="#666" />
+              <Ionicons name="close" size={20} color="#999" />
             </TouchableOpacity>
           </View>
         ) : (
           <>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
-            <Text style={styles.title}> Forums disponibles</Text>
-            <View style={styles.headerIcons}>
+            <Text style={styles.headerTitle}>Forums disponibles</Text>
+            <View style={styles.headerActions}>
               <TouchableOpacity
-                style={styles.iconButton}
                 onPress={() => setShowSearch(true)}
+                style={styles.headerIcon}
               >
-                <Ionicons name="search" size={24} color="#333" />
+                <Ionicons name="search" size={22} color="#333" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton}>
-                <Ionicons name="add-circle" size={24} color="#333" />
+              <TouchableOpacity style={styles.headerIcon}>
+                <Ionicons name="add-circle" size={24} color="#06803A" />
               </TouchableOpacity>
             </View>
           </>
         )}
       </View>
 
-      {/* Forums List */}
-      <ScrollView contentContainerStyle={styles.forumsContainer}>
-        {filteredForums.length > 0 ? (
-          filteredForums.map(forum => (
-            <Link href={`/forum/forumDetail`} key={forum.id} asChild>
-              <TouchableOpacity style={styles.forumCard}>
-                <View style={styles.forumHeader}>
-                  <Image
-                    source={{ uri: forum.icon }}
-                    style={styles.forumIcon}
-                  />
-                  <View style={styles.forumInfo}>
-                    <Text style={styles.forumTitle}>{forum.title}</Text>
-                    <Text style={styles.forumDescription}>{forum.description}</Text>
-                  </View>
-                  <MaterialIcons name="chevron-right" size={24} color="#999" />
-                </View>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Forums List */}
+        <View style={styles.forumsSection}>
+          <Text style={styles.sectionTitle}>Tous les Forums</Text>
 
-                <View style={styles.forumStats}>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{forum.topicsCount}</Text>
-                    <Text style={styles.statLabel}>Topics</Text>
+          {filteredForums.length > 0 ? (
+            filteredForums.map((forum) => (
+              <Link href={`/forum/forumDetail`} key={forum.id} asChild>
+                <TouchableOpacity style={styles.forumCard}>
+                  <View style={styles.forumHeader}>
+                    <View style={styles.forumIconContainer}>
+                      <Image
+                        source={{ uri: forum.icon }}
+                        style={{ width: 30, height: 30 }}
+                      />
+                      {/* <Ionicons name="chatbubbles" size={28} color="#06803A" /> */}
+                    </View>
+                    <View style={styles.forumInfo}>
+                      <Text style={styles.forumTitle}>{forum.title}</Text>
+                      <Text style={styles.forumDescription} numberOfLines={2}>
+                        {forum.description}
+                      </Text>
+                    </View>
+                    <MaterialIcons
+                      name="chevron-right"
+                      size={24}
+                      color="#999"
+                    />
                   </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{forum.postsCount}</Text>
-                    <Text style={styles.statLabel}>Posts</Text>
+
+                  <View style={styles.forumStats}>
+                    <View style={styles.forumStatItem}>
+                      <Ionicons
+                        name="document-text"
+                        size={16}
+                        color="#06803A"
+                      />
+                      <Text style={styles.statNumber}>{forum.topicsCount}</Text>
+                      <Text style={styles.statLabel}>Topics</Text>
+                    </View>
+                    <View style={styles.forumStatItem}>
+                      <Ionicons name="chatbox" size={16} color="#06803A" />
+                      <Text style={styles.statNumber}>{forum.postsCount}</Text>
+                      <Text style={styles.statLabel}>Posts</Text>
+                    </View>
+                    <View style={styles.lastPost}>
+                      <Text style={styles.lastPostLabel}>
+                        Dernière activité
+                      </Text>
+                      <Text style={styles.lastPostText} numberOfLines={1}>
+                        {forum.lastPost.user}
+                      </Text>
+                      <Text style={styles.lastPostDate}>
+                        {forum.lastPost.date}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.lastPost}>
-                    <Text style={styles.lastPostText} numberOfLines={1}>
-                      Last post by {forum.lastPost.user}
-                    </Text>
-                    <Text style={styles.lastPostDate}>{forum.lastPost.date}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </Link>
-          ))
-        ) : (
-          <View style={styles.emptyState}>
-            <MaterialIcons name="forum" size={50} color="#ccc" />
-            <Text style={styles.emptyStateText}>No forums found</Text>
-            <Text style={styles.emptyStateSubtext}>Try a different search</Text>
-          </View>
-        )}
+                </TouchableOpacity>
+              </Link>
+            ))
+          ) : (
+            <View style={styles.emptyState}>
+              <MaterialIcons name="forum" size={60} color="#ddd" />
+              <Text style={styles.emptyStateText}>Aucun forum trouvé</Text>
+              <Text style={styles.emptyStateSubtext}>
+                Essayez une autre recherche
+              </Text>
+            </View>
+          )}
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-    paddingHorizontal: 16,
+    backgroundColor: "#f9f9f9",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    paddingTop: 40,
-    backgroundColor: 'white',
+    backgroundColor: "white",
+    borderBottomColor: "#eee",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerTitle: {
+    fontSize: 20,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    flex: 1,
+    textAlign: "center",
+    marginHorizontal: 16,
   },
-  backText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#333',
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+  headerIcon: {
+    marginLeft: 12,
   },
-  headerIcons: {
-    flexDirection: 'row',
-  },
-  iconButton: {
-    marginLeft: 16,
+  searchContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 44,
   },
   searchIcon: {
     marginRight: 8,
   },
-  searchContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 40,
-  },
   searchInput: {
     flex: 1,
-    height: '100%',
-    paddingVertical: 0,
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
   },
-  closeSearch: {
-    marginLeft: 8,
+  heroSection: {
+    height: 180,
+    backgroundColor: "#06803A",
+    margin: 16,
+    borderRadius: 20,
+    overflow: "hidden",
+    position: "relative",
   },
-  forumsContainer: {
-    paddingBottom: 32,
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  heroTitle: {
+    fontSize: 26,
+    fontFamily: Fonts.type.bold,
+    color: "white",
+    marginTop: 12,
+    textAlign: "center",
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    color: "rgba(255,255,255,0.9)",
+    marginTop: 8,
+    textAlign: "center",
+  },
+  statsSection: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    marginBottom: 24,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginTop: 8,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    marginTop: 4,
+  },
+  forumsSection: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 80,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 16,
   },
   forumCard: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: "#fff",
+    borderRadius: 12,
     padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
+    marginBottom: 12,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
   forumHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
-  forumIcon: {
-    width: 40,
-    height: 40,
+  forumIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 12,
+    backgroundColor: "#e6fff0",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
   },
   forumInfo: {
     flex: 1,
   },
   forumTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
     marginBottom: 4,
   },
   forumDescription: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 13,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    lineHeight: 18,
   },
   forumStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
     paddingTop: 12,
+    gap: 8,
   },
-  statItem: {
-    alignItems: 'center',
+  forumStatItem: {
+    alignItems: "center",
     flex: 1,
-  },
-  statNumber: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#06803A',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#666',
   },
   lastPost: {
     flex: 2,
-    paddingLeft: 16,
+    paddingLeft: 12,
+  },
+  lastPostLabel: {
+    fontSize: 11,
+    fontFamily: Fonts.type.semi,
+    color: "#999",
+    marginBottom: 2,
   },
   lastPostText: {
     fontSize: 12,
-    color: '#666',
+    fontFamily: Fonts.type.semi,
+    color: "#333",
     marginBottom: 2,
   },
   lastPostDate: {
-    fontSize: 12,
-    color: '#999',
-    fontStyle: 'italic',
+    fontSize: 11,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
   },
   emptyState: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
   },
   emptyStateText: {
     fontSize: 18,
-    color: '#666',
+    fontFamily: Fonts.type.bold,
+    color: "#999",
     marginTop: 16,
   },
   emptyStateSubtext: {
     fontSize: 14,
-    color: '#999',
-    marginTop: 4,
+    fontFamily: Fonts.type.primary,
+    color: "#bbb",
+    marginTop: 8,
   },
 });
 

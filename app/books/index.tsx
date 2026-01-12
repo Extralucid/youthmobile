@@ -201,17 +201,6 @@ const BookScreen = () => {
       </View>
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Hero Section */}
-        <View style={styles.heroSection}>
-          <View style={styles.heroOverlay}>
-            <Ionicons name="library" size={40} color="rgba(255,255,255,0.9)" />
-            <Text style={styles.heroTitle}>Explorez Notre Collection</Text>
-            <Text style={styles.heroSubtitle}>
-              {books.length} livres numériques disponibles
-            </Text>
-          </View>
-        </View>
-
         {/* Featured Books Carousel */}
         <View style={styles.featuredSection}>
           <View style={styles.sectionHeader}>
@@ -358,6 +347,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     backgroundColor: "white",
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1,
   },
   headerTitle: {
     fontSize: 20,
@@ -392,36 +383,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.type.primary,
     color: "#333",
   },
-  heroSection: {
-    height: 180,
-    backgroundColor: "#06803A",
-    margin: 16,
-    borderRadius: 20,
-    overflow: "hidden",
-    position: "relative",
-  },
-  heroOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-  },
-  heroTitle: {
-    fontSize: 26,
-    fontFamily: Fonts.type.bold,
-    color: "white",
-    marginTop: 12,
-    textAlign: "center",
-  },
-  heroSubtitle: {
-    fontSize: 14,
-    fontFamily: Fonts.type.primary,
-    color: "rgba(255,255,255,0.9)",
-    marginTop: 8,
-  },
+
   featuredSection: {
     marginBottom: 24,
+    marginTop: 16,
   },
   sectionHeader: {
     flexDirection: "row",
