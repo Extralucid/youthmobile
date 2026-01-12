@@ -2,14 +2,12 @@ import McVectorIcon from "@/components/McVectorIcon/McVectorIcon";
 import ImageSlider from "@/components/slider/ImageSlider";
 import Fonts from "@/constants/Fonts";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -19,6 +17,7 @@ import {
 } from "react-native";
 
 import { Badge, Snackbar } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Calculate card width based on screen width
 const { width } = Dimensions.get("window");
@@ -103,7 +102,7 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
@@ -118,18 +117,20 @@ export default function Index() {
                 borderRadius: 60,
               }}
             >
-              <Image
-                source={{ uri: "../assets/images/education.jpg" }}
-                style={{ height: 46, width: "100%", borderRadius: 60 }}
-                placeholder={{ blurhash }}
-              />
+              <TouchableOpacity onPress={() => router.navigate("/profile")}>
+                <Image
+                  source={require("../assets/images/education.jpg")}
+                  style={{ height: 46, width: "100%", borderRadius: 60 }}
+                  placeholder={{ blurhash }}
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.userName}>M. Honoré OUEDRAOGO</Text>
             <Text
               style={styles.profileLink}
-              // onPress={() => navigation.navigate('Profil')}
+              onPress={() => router.navigate("/profile")}
             >
               Voir mon profil
             </Text>
@@ -141,7 +142,12 @@ export default function Index() {
               flex: 0.4,
             }}
           >
-            <MaterialCommunityIcons name="bell" color="#000" size={25} />
+            <MaterialCommunityIcons
+              name="bell"
+              color="#000"
+              size={25}
+              onPress={() => router.navigate("/settings/notifications")}
+            />
             <Badge
               size={8}
               style={{
@@ -251,9 +257,13 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flexGrow: 1,
-    paddingTop: Constants.statusBarHeight,
+    // paddingTop: Constants.statusBarHeight,
     backgroundColor: "#fff",
   },
   serviceContainer: {
