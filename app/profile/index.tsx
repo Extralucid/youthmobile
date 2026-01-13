@@ -51,7 +51,7 @@ export default function ProfileScreen() {
       ],
     },
     {
-      title: "Mes Activités",
+      title: "Mon Activité",
       items: [
         {
           label: "Mes candidatures",

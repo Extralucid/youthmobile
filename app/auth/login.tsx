@@ -1,21 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Snackbar, TextInput } from 'react-native-paper';
+import Fonts from "@/constants/Fonts";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Snackbar } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 // import * as SplashScreen from 'expo-splash-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as LocalAuthentication from 'expo-local-authentication';
-import { useRouter } from 'expo-router';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [finger, setFinger] = useState(null);
-  const [identifiant, setIdentifiant] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [identifiant, setIdentifiant] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [visible, setVisible] = React.useState(false);
-  const [message, setMessage] = React.useState('');
+  const [message, setMessage] = React.useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const onToggleSnackBar = () => setVisible(!visible);
@@ -26,44 +41,46 @@ export default function LoginScreen() {
   };
 
   async function redirect() {
-    if (identifiant == '' || password == '') {
-      setMessage('Remplissez tous les champs !');
+    if (identifiant === "" || password === "") {
+      setMessage("Remplissez tous les champs !");
       onToggleSnackBar();
     } else {
-      if (identifiant == 'honore.ouedraogo@maqom.org' || identifiant == '75552635') {
+      if (
+        identifiant === "honore.ouedraogo@maqom.org" ||
+        identifiant === "75552635"
+      ) {
         await login();
-
       } else {
-        setMessage('Acces incorrecte !');
+        setMessage("Acces incorrecte !");
         onToggleSnackBar();
       }
     }
   }
 
   const goToRegister = async () => {
-    router.replace('/auth/signup');
+    router.replace("/auth/signup");
   };
 
   const goToForgot = async () => {
-    router.replace('/auth/forgetPassword');
+    router.replace("/auth/forgetPassword");
   };
 
   const scanFingerprint = async () => {
-    const email = await AsyncStorage.getItem('email');
-    const pwd = await AsyncStorage.getItem('pwd');
+    const email = await AsyncStorage.getItem("email");
+    const pwd = await AsyncStorage.getItem("pwd");
 
     // if (!email || !pwd) return;
 
     let result = await LocalAuthentication.authenticateAsync();
-    console.log('Scan Result:', result);
+    console.log("Scan Result:", result);
     //setFinger(JSON.stringify(result));
-    if (result.success == true) {
+    if (result.success === true) {
       await loginWithFingerPrint(email, pwd);
     }
   };
 
   async function login() {
-    router.replace('/onboarding/categories');
+    router.replace("/onboarding/categories");
     // setLoading(true);
     // const url = 'https://gesmuttest.menet.ci:5482/api/v1/signin';
     // return fetch(url, {
@@ -169,73 +186,127 @@ export default function LoginScreen() {
   }
   useEffect(() => {
     scanFingerprint();
-  }, []);
+  });
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.formContainer}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        <Text style={styles.fieldsetTitle}>YouthConnekt BF</Text>
-        <View style={styles.formGroup}>
-          <TextInput
-            label="Email ou Téléphone"
-            placeholder="Entrez votre mail ou Tel"
-            value={identifiant}
-            style={styles.textInput}
-            activeUnderlineColor="#ABBAC8"
-            placeholderTextColor="#ABBAC8"
-            keyboardType="email-address"
-            onChangeText={(text) => setIdentifiant(text)}
-          />
-          <TextInput
-            label="Mot de passe"
-            placeholder="Entrez votre mot de passe"
-            value={password}
-            secureTextEntry={showPassword}
-            style={{ marginBottom: '2%', backgroundColor: '#F2F2F2' }}
-            activeUnderlineColor="#ABBAC8"
-            placeholderTextColor="#ABBAC8"
-            onChangeText={(text) => setPassword(text)}
-            right={<TextInput.Icon icon="eye" onPress={() => AffichePassword()} />}
-          />
-          <Text style={styles.forgetPasswordText} onPress={() => { goToForgot(); }}>Mot
-            de passe oublié ?</Text>
-          <Button mode="contained" style={styles.buttonLogin} onPress={() => redirect()}>
-            Se connecter
-          </Button>
-          <View style={styles.print}>
-            <MaterialCommunityIcons
-              name="fingerprint"
-              color="#000"
-              size={55}
-              onPress={() => scanFingerprint()}
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>
+            {/* Logo */}
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
             />
-            <Text style={{ fontSize: 12, fontWeight: '600' }}>
-              Se connecter par empreinte digitale
-            </Text>
+
+            {/* Title */}
+            <Text style={styles.title}>YouthConnekt Burkina</Text>
+
+            {/* Email/Phone Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color="#999"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email ou Téléphone"
+                placeholderTextColor="#999"
+                value={identifiant}
+                onChangeText={(text) => setIdentifiant(text)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color="#999"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Mot de passe"
+                placeholderTextColor="#999"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                secureTextEntry={showPassword}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity onPress={AffichePassword}>
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color="#999"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* Forgot Password Link */}
+            <TouchableOpacity
+              onPress={goToForgot}
+              style={styles.forgotPasswordContainer}
+            >
+              <Text style={styles.forgetPasswordText}>
+                Mot de passe oublié ?
+              </Text>
+            </TouchableOpacity>
+
+            {/* Login Button */}
+            <TouchableOpacity style={styles.loginButton} onPress={redirect}>
+              <Text style={styles.loginButtonText}>Se connecter</Text>
+            </TouchableOpacity>
+
+            {/* Fingerprint */}
+            <View style={styles.print}>
+              <MaterialCommunityIcons
+                name="fingerprint"
+                color="#000"
+                size={55}
+                onPress={scanFingerprint}
+              />
+              <Text style={styles.fingerprintText}>
+                Se connecter par empreinte digitale
+              </Text>
+            </View>
+
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>Ou</Text>
+              <View style={styles.divider} />
+            </View>
+
+            {/* Sign Up Link */}
+            <TouchableOpacity onPress={goToRegister}>
+              <Text style={styles.signInLink}>Inscrivez-vous</Text>
+            </TouchableOpacity>
+
+            {/* Loading Overlay */}
+            {loading && (
+              <View style={styles.loading}>
+                <ActivityIndicator size="large" color="#F59B21" />
+              </View>
+            )}
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={styles.leftLine}></View>
-            <Text style={{ flex: 1, fontSize: 17, textAlign: 'center' }}>Ou</Text>
-            <View style={styles.rightLine}></View>
-          </View>
-          <Text style={styles.SignInTitle} onPress={() => { goToRegister(); }}>
-            Inscrivez-vous
-          </Text>
-        </View>
-        {loading ? (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color="orange" />
-          </View>
-        ) : (
-          <View></View>
-        )}
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
       <Snackbar
         visible={visible}
         onDismiss={onDismissSnackBar}
         action={{
-          label: 'Compris',
+          label: "Compris",
           onPress: () => {
             onToggleSnackBar();
           },
@@ -243,92 +314,127 @@ export default function LoginScreen() {
       >
         {message}
       </Snackbar>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-  print: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    marginBottom: '6%',
+  keyboardAvoid: {
+    flex: 1,
   },
-  formContainer: {
-    borderRadius: 10,
-    borderColor: 'lightgray',
-    width: '90%',
-    padding: 25,
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 20,
   },
-  textInput: {
-    marginBottom: '9%',
-    backgroundColor: '#F2F2F2',
-  },
-  formGroup: {
-    paddingTop: '9%',
-  },
-  buttonLogin: {
-    marginBottom: '5%',
-    marginTop: '9%',
-    backgroundColor: '#F59B21',
-    borderRadius: 8,
-  },
-  fieldsetTitle: {
-    fontWeight: 'bold',
-    fontSize: 21,
-    textAlign: 'center',
-    marginBottom: '0%',
-  },
-  SignInTitle: {
-    textAlign: 'center',
-    color: '#F59B21',
-    marginTop: '4%',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-  },
-  forgetPasswordText: {
-    textAlign: 'right',
-    color: '#F59B21',
-    textDecorationLine: 'underline',
-    marginBottom: '7%',
-  },
-  leftLine: {
-    flex: 2,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    height: 0,
-    position: 'relative',
-    top: '4%',
-  },
-  rightLine: {
-    flex: 2,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    height: 0,
-    position: 'relative',
-    top: '4%',
+  content: {
+    alignItems: "center",
   },
   logo: {
     width: 140,
     height: 87,
-    alignSelf: 'center',
-    marginBottom: '9%',
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 32,
+    textAlign: "center",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F2F2F2",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    width: "100%",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
+  },
+  forgotPasswordContainer: {
+    width: "100%",
+    alignItems: "flex-end",
+    marginBottom: 24,
+  },
+  forgetPasswordText: {
+    color: "#F59B21",
+    fontSize: 14,
+    fontFamily: Fonts.type.primary,
+    textDecorationLine: "underline",
+  },
+  loginButton: {
+    backgroundColor: "#F59B21",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
+  },
+  loginButtonText: {
+    color: "#fff",
+    fontFamily: Fonts.type.semi,
+    fontSize: 16,
+  },
+  print: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+  },
+  fingerprintText: {
+    fontSize: 13,
+    fontFamily: Fonts.type.semi,
+    marginTop: 8,
+    color: "#666",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#e0e0e0",
+  },
+  dividerText: {
+    paddingHorizontal: 16,
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+  },
+  signInLink: {
+    fontSize: 15,
+    fontFamily: Fonts.type.semi,
+    color: "#F59B21",
+    textDecorationLine: "underline",
+    textAlign: "center",
   },
   loading: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    opacity: 0.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    opacity: 0.8,
   },
 });

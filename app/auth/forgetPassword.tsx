@@ -1,166 +1,232 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Snackbar, TextInput } from 'react-native-paper';
+import Fonts from "@/constants/Fonts";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForgotPasswordScreen() {
-    const [password, setPassword] = useState("")
-    const [finger, setFinger] = useState(null);
-    const [identifiant, setIdentifiant] = React.useState('');
-    const [showPassword, setShowPassword] = useState(true);
-    const [visible, setVisible] = React.useState(false);
-    const [message, setMessage] = React.useState('');
-    const [loading, setLoading] = React.useState(false);
-    const router = useRouter();
-    const onToggleSnackBar = () => setVisible(!visible);
-    const onDismissSnackBar = () => setVisible(false);
+  const [contact, setContact] = useState("");
 
-    const AffichePassword = () => {
-        setShowPassword(!showPassword);
-    };
-    const goToLogin = async () => {
-        router.replace('/auth/login');
-    };
-     const goToOtp = async () => {
-        router.replace('/auth/codeOTP');
-    };
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.formContainer}>
-                <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-                <Text style={styles.fieldsetTitle}>Mot de passe oublié</Text>
-                <View style={styles.formGroup}>
-                    <TextInput
-                        label="Entrez votre email ou N° de téléphone"
-                        placeholder="Email ou N° de téléphone"
-                        value={password}
-                        activeUnderlineColor="#ABBAC8"
-                        placeholderTextColor='#ABBAC8'
-                        style={styles.textInput}
-                        onChangeText={text => setPassword(text)}
-                    />
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [contactType, setContactType] = useState<"email" | "phone" | null>(
+    null
+  );
 
-                    <Button mode="contained" style={styles.buttonLogin} onPress={() => goToOtp()}>
-                        Envoyer
-                    </Button>
+  const validateAndSend = () => {
+    if (!contact.trim()) {
+      Alert.alert(
+        "Erreur",
+        "Veuillez entrer votre email ou numéro de téléphone"
+      );
+      return;
+    }
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.leftLine}></View>
-                        <Text style={{ flex: 1, fontSize: 17, textAlign: 'center' }}>Ou</Text>
-                        <View style={styles.rightLine}></View>
-                    </View>
-                    <Text style={styles.SignInTitle} onPress={() => { goToLogin(); }}>
-                        Connectez-vous
-                    </Text>
-                </View>
-                {loading ? (
-                    <View style={styles.loading}>
-                        <ActivityIndicator size="large" color="orange" />
-                    </View>
-                ) : (
-                    <View></View>
-                )}
+    // Déterminer si c'est un email ou un téléphone
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[+]?[0-9]{8,15}$/;
+
+    let type: "email" | "phone";
+    if (emailRegex.test(contact)) {
+      type = "email";
+    } else if (phoneRegex.test(contact.replace(/\s/g, ""))) {
+      type = "phone";
+    } else {
+      Alert.alert(
+        "Format invalide",
+        "Veuillez entrer un email ou un numéro de téléphone valide"
+      );
+      return;
+    }
+
+    // Naviguer vers OTP avec les paramètres
+    router.push({
+      pathname: "/auth/codeOTP",
+      params: {
+        type: "reset",
+        contact: contact,
+        contactType: type,
+      },
+    });
+  };
+
+  const goToLogin = () => {
+    router.push("/auth/login");
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>
+            {/* Logo */}
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
+            />
+
+            {/* Title */}
+            <Text style={styles.title}>Mot de passe oublié ?</Text>
+            <Text style={styles.subtitle}>
+              Entrez votre email ou numéro de téléphone pour recevoir un code de
+              vérification
+            </Text>
+
+            {/* Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color="#999"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email ou Téléphone"
+                placeholderTextColor="#999"
+                value={contact}
+                onChangeText={setContact}
+                keyboardType="default"
+                autoCapitalize="none"
+              />
             </View>
-            <Snackbar
-                visible={visible}
-                onDismiss={onDismissSnackBar}
-                action={{
-                    label: 'Compris',
-                    onPress: () => {
-                        onToggleSnackBar();
-                    },
-                }}
+
+            {/* Send Button */}
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={validateAndSend}
             >
-                {message}
-            </Snackbar>
+              <Text style={styles.sendButtonText}>Envoyer le code</Text>
+            </TouchableOpacity>
+
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>Ou</Text>
+              <View style={styles.divider} />
+            </View>
+
+            {/* Back to Login */}
+            <TouchableOpacity onPress={goToLogin}>
+              <Text style={styles.loginLink}>Retour à la connexion</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-    );
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
-
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    print: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 12,
-        marginBottom: '6%',
-    },
-    formContainer: {
-        borderRadius: 10,
-        borderColor: 'lightgray',
-        width: '90%',
-        padding: 25,
-    },
-    textInput: {
-        marginBottom: '9%',
-        backgroundColor: '#F2F2F2',
-    },
-    formGroup: {
-        paddingTop: '9%',
-    },
-    buttonLogin: {
-        marginBottom: '5%',
-        marginTop: '9%',
-        backgroundColor: '#F59B21',
-        borderRadius: 8,
-    },
-    fieldsetTitle: {
-        fontWeight: 'bold',
-        fontSize: 21,
-        textAlign: 'center',
-        marginBottom: '0%',
-    },
-    SignInTitle: {
-        textAlign: 'center',
-        color: '#F59B21',
-        marginTop: '4%',
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
-    },
-    forgetPasswordText: {
-        textAlign: 'right',
-        color: '#F59B21',
-        textDecorationLine: 'underline',
-        marginBottom: '7%',
-    },
-    leftLine: {
-        flex: 2,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        height: 0,
-        position: 'relative',
-        top: '4%',
-    },
-    rightLine: {
-        flex: 2,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        height: 0,
-        position: 'relative',
-        top: '4%',
-    },
-    logo: {
-        width: 140,
-        height: 87,
-        alignSelf: 'center',
-        marginBottom: '9%',
-    },
-    loading: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'white',
-        opacity: 0.5,
-    },
-})
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+
+  keyboardAvoid: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  content: {
+    alignItems: "center",
+  },
+  logo: {
+    width: 140,
+    height: 87,
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: Fonts.type.bold,
+    color: "#333",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 32,
+    lineHeight: 22,
+    paddingHorizontal: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F2F2F2",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    width: "100%",
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#333",
+  },
+  sendButton: {
+    backgroundColor: "#F59B21",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
+  },
+  sendButtonText: {
+    color: "#fff",
+    fontFamily: Fonts.type.semi,
+    fontSize: 16,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#e0e0e0",
+  },
+  dividerText: {
+    paddingHorizontal: 16,
+    fontSize: 15,
+    fontFamily: Fonts.type.primary,
+    color: "#999",
+  },
+  loginLink: {
+    fontSize: 15,
+    fontFamily: Fonts.type.semi,
+    color: "#F59B21",
+    textDecorationLine: "underline",
+  },
+});
