@@ -1,16 +1,16 @@
 // components/LanguageSelector.tsx
-import React from 'react';
-import { Button, StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeLanguage } from '../slices/languageSlice';
-import { AppDispatch, RootState } from '../store/store';
+import React from "react";
+import { Button, StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { changeLanguage } from "../slices/languageSlice";
+import { AppDispatch, RootState } from "../store/store";
 
 const LanguageSelector: React.FC = () => {
   const { currentLanguage, supportedLanguages } = useSelector(
     (state: RootState) => state.language
   );
 
-const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLanguageChange = async (language: string) => {
     await dispatch(changeLanguage(language));
@@ -33,8 +33,8 @@ const dispatch = useDispatch<AppDispatch>();
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 16,
   },
 });
